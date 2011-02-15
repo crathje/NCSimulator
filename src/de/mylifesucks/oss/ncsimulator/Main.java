@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import de.mylifesucks.oss.ncsimulator.gui.MainPanel;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindow;
 import de.mylifesucks.oss.ncsimulator.gui.tray.SimTray;
+import de.mylifesucks.oss.ncsimulator.protocol.Serial;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -198,12 +199,17 @@ public class Main extends JFrame {
 
 
         // initialize dataStorage
-        drawSplashProgressBar(25);
+        drawSplashProgressBar(20);
         drawSplashMessage("Initializing DataStorage");
         DataStorage.getInstance();
 
+        // detect ports
+        drawSplashProgressBar(40);
+        drawSplashMessage("Detecting Serial Ports");
+        Serial.getPorts();
+
         // buid main Frame
-        drawSplashProgressBar(50);
+        drawSplashProgressBar(60);
         drawSplashMessage("Initializing MainFrame");
         Main main = new Main();
 

@@ -40,6 +40,7 @@ public class Serial implements Runnable, SerialPortEventListener {
     static boolean outputBufferEmptyFlag = false;
     public byte[] buffer = null;
     public boolean isUSB;
+    static Vector<String> portNames = null;
 
     public void initwritetoport() {
         // initwritetoport() assumes that the port has already been opened and
@@ -71,16 +72,17 @@ public class Serial implements Runnable, SerialPortEventListener {
     }
 
     public static Vector<String> getPorts() {
-        Vector<String> ret = new Vector<String>();
-        portList = CommPortIdentifier.getPortIdentifiers();
-        while (portList.hasMoreElements()) {
-            portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                ret.add(portId.getName());
+        if (portNames == null) {
+            portNames = new Vector<String>();
+            portList = CommPortIdentifier.getPortIdentifiers();
+            while (portList.hasMoreElements()) {
+                portId = (CommPortIdentifier) portList.nextElement();
+                if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                    portNames.add(portId.getName());
+                }
             }
         }
-
-        return ret;
+        return portNames;
     }
 
     public Serial(String port, boolean isUSB) {

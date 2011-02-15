@@ -103,7 +103,7 @@ public class InfoPanel extends JPanel {
         center.add(checkText);
         center.add(Box.createHorizontalGlue());
         verticalBox.add(center);
-        
+
         checker = new Runnable() {
 
             public void run() {
@@ -137,6 +137,11 @@ public class InfoPanel extends JPanel {
         JTextArea jta = new JTextArea("Some hacked Java GUI to simulate the OSD (and some other) output from the NC\n"
                 + "A lot of bugs might be here since it is heavily untested stuff but somehow helpfull for debugging own Applications that require data from an MK.\n"
                 + "\n"
+                + "Open Source:\n"
+                + "Licensed under: Creative Commons / Non Commercial / Share Alike\n"
+                + "http://creativecommons.org/licenses/by-nc-sa/2.0/de/\n"
+                + "Sources available at: https://github.com/crathje/NCSimulator\n"
+                + "\n"
                 + "Credits to:\n"
                 + "\tMarcus -LiGi- Bueschleb for the Encode/Decode java parts I borrowed from DUBWise\n"
                 + "\tHolger Buss & Ingo Busker for the MikroKopter-project\n"
@@ -163,7 +168,7 @@ public class InfoPanel extends JPanel {
 
 
 
-   
+
         JTextArea changeLog = new JTextAreaFromFile("/CHANGE.LOG");
         changeLog.setEditable(false);
         changeLog.setBackground(getBackground());
