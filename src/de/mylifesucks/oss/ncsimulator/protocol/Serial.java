@@ -85,7 +85,7 @@ public class Serial implements Runnable, SerialPortEventListener {
         return portNames;
     }
 
-    public Serial(String port, boolean isUSB) {
+    public Serial(String port, boolean isUSB) throws Exception {
 
         this.isUSB = isUSB;
         boolean portFound = false;
@@ -108,12 +108,12 @@ public class Serial implements Runnable, SerialPortEventListener {
         }
 
 
-
         if (port != null) {
             defaultPort = port;
         }
 
-//        System.out.println("Set default port to " + defaultPort);
+
+        System.out.println("Set default port to " + defaultPort);
 
         // parse ports and if the default port is found, initialized the reader
         portList = CommPortIdentifier.getPortIdentifiers();
@@ -134,33 +134,19 @@ public class Serial implements Runnable, SerialPortEventListener {
             System.exit(0);
         }
 
+        portId = CommPortIdentifier.getPortIdentifier(defaultPort);
+        serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
+        inputStream = serialPort.getInputStream();
 
-        // initalize serial port
-        try {
-            serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
-        } catch (PortInUseException e) {
-        }
-
-        try {
-            inputStream = serialPort.getInputStream();
-        } catch (IOException e) {
-        }
-
-        try {
-            serialPort.addEventListener(this);
-        } catch (TooManyListenersException e) {
-        }
+        serialPort.addEventListener(this);
 
         // activate the DATA_AVAILABLE notifier
         serialPort.notifyOnDataAvailable(true);
 
-        try {
-            // set port parameters
-            serialPort.setSerialPortParams(57600, SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
-        } catch (UnsupportedCommOperationException e) {
-        }
+        // set port parameters
+        serialPort.setSerialPortParams(57600, SerialPort.DATABITS_8,
+                SerialPort.STOPBITS_1,
+                SerialPort.PARITY_NONE);
 
 
         // first thing in the thread, we initialize the write operation
@@ -169,7 +155,6 @@ public class Serial implements Runnable, SerialPortEventListener {
         // start the read thread
         readThread = new Thread(this);
         readThread.start();
-
     }
 
     public void run() {
@@ -202,7 +187,7 @@ public class Serial implements Runnable, SerialPortEventListener {
             case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
-                // System.out.print(".");
+                //System.out.print(".");
                 try {
                     while (inputStream.available() > 0) {
                         int numBytes = inputStream.read(readBuffer);

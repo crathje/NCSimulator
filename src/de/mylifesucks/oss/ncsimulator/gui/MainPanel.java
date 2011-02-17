@@ -15,13 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
@@ -29,8 +23,6 @@ import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.Serial;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JScrollPane;
 
 /**
  * The main Panel
@@ -76,6 +68,8 @@ public class MainPanel extends JPanel {
         start.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+
+                try{
                 ports.setEditable(false);
                 ports.setEnabled(false);
                 start.setEnabled(false);
@@ -84,6 +78,13 @@ public class MainPanel extends JPanel {
                 DataStorage.encoder = new Encode(DataStorage.serial.getOutputStream());
                 DataStorage.sendThread = new SendThread("Serial send Thread");
                 DataStorage.sendThread.start();
+                }
+                catch(Exception ex){
+                    JOptionPane.showMessageDialog(null,ex.getMessage(),"Start Error",JOptionPane.ERROR_MESSAGE);
+                    ports.setEditable(false);
+                    ports.setEnabled(false);
+                    start.setEnabled(false);
+                }
             }
         });
 
