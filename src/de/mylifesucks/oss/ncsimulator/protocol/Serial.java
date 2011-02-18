@@ -576,8 +576,10 @@ public class Serial implements Runnable, SerialPortEventListener {
                                     break;
                                 case 'b': // ExternControl
                                     break;
-                                case 'c': // Poll the 3D-Data
-                                    //DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                case 'c': // request for 3D data;
+                                    if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                    }
                                     break;
                                 case 'd': // Poll the debug data
                                     if ((DataStorage.FCDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {

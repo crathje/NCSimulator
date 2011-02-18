@@ -73,6 +73,11 @@ public class SendThread extends Thread {
                             DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
                             //System.out.println("Debug autosend");
                         }
+                        if (DataStorage.data3d_t.requestTime > 0 && System.currentTimeMillis() + sleeptime > data3DLasttime + DataStorage.data3d_t.requestTime) {
+                            data3DLasttime = System.currentTimeMillis();
+                            DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                            //System.out.println("3D autosend");
+                        }
                         break;
                 }
 
