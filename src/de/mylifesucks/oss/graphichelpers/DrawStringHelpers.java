@@ -57,7 +57,7 @@ public class DrawStringHelpers {
         do {
             fontsize -= 5;
 
-            g2d.setFont(new Font("Dialog", Font.PLAIN, fontsize));
+            g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, fontsize));
             FontRenderContext frc = g2d.getFontRenderContext();
             TextLayout tl = new TextLayout(drawString, g2d.getFont(), frc);
             bounds = tl.getBounds();
@@ -101,7 +101,7 @@ public class DrawStringHelpers {
 
         float posx = 0, posy = 0;
 
-        g2d.setFont(new Font("Dialog", Font.PLAIN, fontSize));
+        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, fontSize));
         FontRenderContext frc = g2d.getFontRenderContext();
         TextLayout tl = new TextLayout(drawString, g2d.getFont(), frc);
         bounds = tl.getBounds();
@@ -149,7 +149,7 @@ public class DrawStringHelpers {
 
         float posx = 0, posy = 0;
 
-        g2d.setFont(new Font("Dialog", Font.PLAIN, fontSize));
+        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, fontSize));
         FontRenderContext frc = g2d.getFontRenderContext();
         TextLayout tl = new TextLayout(drawString, g2d.getFont(), frc);
         bounds = tl.getBounds();
@@ -163,8 +163,8 @@ public class DrawStringHelpers {
             yfactor = dim.getHeight() / 100.0;
         }
 
-        posx =  (float) (x * xfactor - bounds.getCenterX());
-        posy =  (float) (y * yfactor - bounds.getCenterY());
+        posx = (float) (x * xfactor - bounds.getCenterX());
+        posy = (float) (y * yfactor - bounds.getCenterY());
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 KEY_ANTIALIASING_before);

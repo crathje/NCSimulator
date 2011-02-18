@@ -83,8 +83,8 @@ public class MainPanel extends JPanel {
 
         Box center = Box.createHorizontalBox();
         center.add(Box.createHorizontalGlue());
-        Vector<String> portlist = SerialComm.getPorts();
-        ports = new JComboBox(portlist);
+        
+        ports = new JComboBox(SerialComm.getPorts().keySet().toArray());
         center.add(ports);
 
         String savedPort = DataStorage.preferences.get(SERIALPORT, "");

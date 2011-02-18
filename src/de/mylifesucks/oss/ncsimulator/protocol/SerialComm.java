@@ -22,12 +22,31 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
 
     static CommPortIdentifier portId;
     static CommPortIdentifier saveportId;
-    static Enumeration portList;
     SerialPort serialPort;
     Thread readThread;
 //    static boolean outputBufferEmptyFlag = false;
     boolean isUSB;
-    static Vector<String> portNames = null;
+    static HashMap<String, CommPortIdentifier> portMap;
+
+        public static HashMap<String, CommPortIdentifier> getPorts() {
+        if (portMap == null) {
+            portMap = new HashMap<String, CommPortIdentifier>();
+            Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+            while (portList.hasMoreElements()) {
+                portId = (CommPortIdentifier) portList.nextElement();
+                if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                    portMap.put(portId.getName(), portId);
+                }
+            }
+        }
+        return portMap;
+    }
+
+
+
+
+
+
 
     public void initwritetoport() {
         // initwritetoport() assumes that the port has already been opened and
@@ -52,21 +71,6 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
             System.exit(-1);
         }
 
-    }
-
-
-    public static Vector<String> getPorts() {
-        if (portNames == null) {
-            portNames = new Vector<String>();
-            portList = CommPortIdentifier.getPortIdentifiers();
-            while (portList.hasMoreElements()) {
-                portId = (CommPortIdentifier) portList.nextElement();
-                if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                    portNames.add(portId.getName());
-                }
-            }
-        }
-        return portNames;
     }
 
     public SerialComm(String port, boolean isUSB) throws Exception {
@@ -100,25 +104,13 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
         System.out.println("Set default port to " + defaultPort);
 
         // parse ports and if the default port is found, initialized the reader
-        portList = CommPortIdentifier.getPortIdentifiers();
-        while (portList.hasMoreElements()) {
-            portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals(defaultPort)) {
-                    System.out.println("Found port: " + defaultPort);
-                    portFound = true;
-                    break;
-                }
-            }
-
-        }
-        if (!portFound) {
+       
+        if (!portMap.keySet().contains(defaultPort)) {
             System.out.println("port " + defaultPort + " not found.");
-            //hard!
             System.exit(0);
         }
-
-        portId = CommPortIdentifier.getPortIdentifier(defaultPort);
+        
+        portId = portMap.get(defaultPort);
         serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
         inputStream = serialPort.getInputStream();
 
