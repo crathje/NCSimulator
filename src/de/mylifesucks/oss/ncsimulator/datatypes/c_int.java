@@ -44,6 +44,10 @@ public abstract class c_int extends Observable {
     public JComponent nameLabel = null;
     public LinkedList<c_int> allAttribs = null;
 
+    protected Integer minValue;
+    protected Integer maxValue;
+
+
     public LinkedList<c_int> getList() {
         LinkedList<c_int> poss = new LinkedList<c_int>();
         if (allAttribs == null) {
@@ -60,6 +64,9 @@ public abstract class c_int extends Observable {
         if (!signed) {
             return 0;
         } else {
+            if (minValue != null) {
+                return minValue.intValue();
+            }
             return (int) -(Math.pow(2, length - 1));
         }
     }
@@ -131,6 +138,11 @@ public abstract class c_int extends Observable {
     }
 
     public int getMax() {
+
+        if (maxValue != null) {
+            return maxValue.intValue();
+        }
+
         if (!signed) {
             return (int) (Math.pow(2, length) - 1);
         } else {

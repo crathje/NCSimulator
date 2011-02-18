@@ -26,4 +26,12 @@ public class s16 extends c_int {
         length = 16;
         this.name = name;
     }
+
+    public s16(String name, int minValue, int maxValue) {
+        signed = true;
+        length = 16;
+        this.name = name;
+        this.minValue = new Integer(minValue);
+        this.maxValue = new Integer(maxValue);
+    }
 }
