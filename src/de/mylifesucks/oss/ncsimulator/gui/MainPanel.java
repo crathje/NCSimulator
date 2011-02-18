@@ -9,7 +9,6 @@
 package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
-import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindow;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -21,8 +20,14 @@ import javax.swing.event.ChangeListener;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
+import de.mylifesucks.oss.ncsimulator.protocol.TcpComm;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.NumberFormat;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  * The main Panel
@@ -31,8 +36,11 @@ import java.awt.GridBagLayout;
 public class MainPanel extends JPanel {
 
     public static final String SERIALPORT = "Serial Port";
+    public static final String TCPPORT = "Tcp Port";
     JButton start;
     JComboBox ports;
+    JButton startTcp;
+    JTextField tcpPort;
     JSlider timeSlider;
     CoordVizualizer cv;
     JTabbedPane tabbed;
@@ -41,6 +49,28 @@ public class MainPanel extends JPanel {
     public static final String stopOSD = "Stop requesting the NC-OSD dataset";
     public static final String requestDEBUG = "Request the FC-Debug dataset";
     public static final String stopDEBUG = "Stop requesting the FC-Debug dataset";
+
+    public class ValueDocument extends PlainDocument {
+
+        @Override
+        public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+            if (str.length() == 0 || str.equals("")) {
+                super.insertString(offs, str, a);
+            } else if (str != null) {
+                try {
+                    Long.valueOf(str);
+                    super.insertString(offs, str, a);
+                } catch (NumberFormatException ex) {
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void remove(int offs, int len) throws BadLocationException {
+            super.remove(offs, len);
+        }
+    }
 
     public MainPanel() {
         super(new BorderLayout());
@@ -69,18 +99,17 @@ public class MainPanel extends JPanel {
 
             public void actionPerformed(ActionEvent e) {
 
-                try{
-                ports.setEditable(false);
-                ports.setEnabled(false);
-                start.setEnabled(false);
-                DataStorage.preferences.put(SERIALPORT, ports.getSelectedItem().toString());
-                DataStorage.serial = new SerialComm(ports.getSelectedItem().toString(), isUSB.isSelected());
-                DataStorage.encoder = new Encode(DataStorage.serial.getOutputStream());
-                DataStorage.sendThread = new SendThread("Serial send Thread");
-                DataStorage.sendThread.start();
-                }
-                catch(Exception ex){
-                    JOptionPane.showMessageDialog(null,ex.getMessage(),"Start Error",JOptionPane.ERROR_MESSAGE);
+                try {
+                    ports.setEditable(false);
+                    ports.setEnabled(false);
+                    start.setEnabled(false);
+                    DataStorage.preferences.put(SERIALPORT, ports.getSelectedItem().toString());
+                    DataStorage.serial = new SerialComm(ports.getSelectedItem().toString(), isUSB.isSelected());
+                    DataStorage.encoder = new Encode(DataStorage.serial.getOutputStream());
+                    DataStorage.sendThread = new SendThread("Serial send Thread");
+                    DataStorage.sendThread.start();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Start Error", JOptionPane.ERROR_MESSAGE);
                     ports.setEditable(false);
                     ports.setEnabled(false);
                     start.setEnabled(false);
@@ -91,6 +120,48 @@ public class MainPanel extends JPanel {
         center.add(start);
         center.add(Box.createHorizontalGlue());
         configBox.add(center);
+
+        tcpPort = new JTextField();
+        tcpPort.setPreferredSize(new Dimension(80, tcpPort.getPreferredSize().height));
+        tcpPort.setSize(tcpPort.getPreferredSize());
+        tcpPort.setMaximumSize(tcpPort.getPreferredSize());
+        tcpPort.setMinimumSize(tcpPort.getPreferredSize());
+        tcpPort.setDocument(new ValueDocument());
+        tcpPort.setText("64400");
+
+        center = Box.createHorizontalBox();
+        center.add(Box.createHorizontalGlue());
+        center.add(tcpPort);
+        startTcp = new JButton("start");
+        startTcp.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    tcpPort.setEditable(false);
+                    tcpPort.setEnabled(false);
+                    startTcp.setEnabled(false);
+                    DataStorage.preferences.put(TCPPORT, tcpPort.getText());
+
+                    DataStorage.serial = new TcpComm(Integer.parseInt(tcpPort.getText()));
+                    DataStorage.encoder = new Encode(DataStorage.serial.getOutputStream());
+                    DataStorage.sendThread = new SendThread("Serial send Thread");
+                    DataStorage.sendThread.start();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Start Error", JOptionPane.ERROR_MESSAGE);
+                    tcpPort.setEditable(false);
+                    tcpPort.setEnabled(false);
+                    startTcp.setEnabled(false);
+                }
+            }
+        });
+
+
+
+        center.add(startTcp);
+        center.add(Box.createHorizontalGlue());
+        configBox.add(center);
+
 
         /*timeSlider = new JSlider(JSlider.HORIZONTAL,
         100, 1000, (int) sleeptime);
@@ -359,14 +430,7 @@ public class MainPanel extends JPanel {
             }
         });
 
-
-
-
-
-
         this.add(DataStorage.statusBar, BorderLayout.SOUTH);
 
     }
 }
-
-
