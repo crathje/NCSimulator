@@ -8,7 +8,7 @@
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
-import de.mylifesucks.oss.ncsimulator.protocol.Serial;
+import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -82,19 +82,19 @@ public class s16Debug extends s16 {
                             public Boolean doInBackground() {
                                 //System.out.println(Serial.NC_ADDRESS + " " + Serial.FC_ADDRESS + " ::: " + ADDRESS);
                                 switch (ADDRESS) {
-                                    case Serial.NC_ADDRESS:
+                                    case CommunicationBase.NC_ADDRESS:
                                         if (DataStorage.UART == DataStorage.UART_CONNECTION.NC) {
                                             //System.out.println("FOcus LOST NC " + ADDRESS);
                                             for (s16Debug foo : DataStorage.NCDebugOut.Analog) {
-                                                DataStorage.encoder.send_command(Serial.NC_ADDRESS, 'A', foo.getLabelArray());
+                                                DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'A', foo.getLabelArray());
                                             }
                                         }
                                         break;
-                                    case Serial.FC_ADDRESS:
+                                    case CommunicationBase.FC_ADDRESS:
                                         if (DataStorage.UART == DataStorage.UART_CONNECTION.FC) {
                                             //System.out.println("FOcus LOST FC " + ADDRESS);
                                             for (s16Debug foo : DataStorage.FCDebugOut.Analog) {
-                                                DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'A', foo.getLabelArray());
+                                                DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'A', foo.getLabelArray());
                                             }
                                         }
                                         break;

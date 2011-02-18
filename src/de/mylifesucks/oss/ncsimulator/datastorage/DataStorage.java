@@ -26,7 +26,7 @@ import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindow;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
-import de.mylifesucks.oss.ncsimulator.protocol.Serial;
+import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,8 +60,8 @@ public class DataStorage {
     public static str_VersionInfo NCversion = new str_VersionInfo("NC");
     public static str_VersionInfo FCversion = new str_VersionInfo("FC");
     public static str_VersionInfo MK3version = new str_VersionInfo("MK3Mag");
-    public static str_DebugOut FCDebugOut = new str_DebugOut("FC", Serial.FC_ADDRESS);
-    public static str_DebugOut NCDebugOut = new str_DebugOut("NC", Serial.NC_ADDRESS);
+    public static str_DebugOut FCDebugOut = new str_DebugOut("FC", CommunicationBase.FC_ADDRESS);
+    public static str_DebugOut NCDebugOut = new str_DebugOut("NC", CommunicationBase.NC_ADDRESS);
     public static paramset_t paramset[] = new paramset_t[5];
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
@@ -69,7 +69,7 @@ public class DataStorage {
     public static Data3D_t data3d_t = new Data3D_t();
     public static Preferences preferences;
     public static Encode encoder;
-    public static Serial serial;
+    public static CommunicationBase serial;
     private static DataStorage instance = new DataStorage();
     private static LinkedList<c_int> serializePool;
     public static SendThread sendThread;

@@ -35,12 +35,12 @@ public class SendThread extends Thread {
                 lasttime = System.currentTimeMillis();
                 if (DataStorage.requestOSDtime > 0 && System.currentTimeMillis() + sleeptime > reqestosdlasttime + DataStorage.requestOSDtime) {
                     reqestosdlasttime = System.currentTimeMillis();
-                    DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'o', new int[]{10});
+                    DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'o', new int[]{10});
                     //System.out.println("OSD request");
                 }
                 if (DataStorage.requestDEBUGtime > 0 && System.currentTimeMillis() + sleeptime > reqestdebuglasttime + DataStorage.requestDEBUGtime) {
                     reqestdebuglasttime = System.currentTimeMillis();
-                    DataStorage.encoder.send_command(Serial.FC_ADDRESS - 1, 'd', new int[]{10});
+                    DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS - 1, 'd', new int[]{10});
                     //System.out.println("Debug request");
                 }
 
@@ -48,34 +48,34 @@ public class SendThread extends Thread {
                     case NC:
                         if (DataStorage.naviData.requestTime > 0 && System.currentTimeMillis() + sleeptime > osdLasttime + DataStorage.naviData.requestTime) {
                             osdLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
                             //System.out.println("OSD autosend");
                         }
                         if (DataStorage.NCDebugOut.requestTime > 0 && System.currentTimeMillis() + sleeptime > NCdebugLasttime + DataStorage.NCDebugOut.requestTime) {
                             NCdebugLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.NC_ADDRESS, 'D', DataStorage.NCDebugOut.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'D', DataStorage.NCDebugOut.getAsInt());
                             //System.out.println("Debug autosend");
                         }
                         if (DataStorage.data3d_t.requestTime > 0 && System.currentTimeMillis() + sleeptime > data3DLasttime + DataStorage.data3d_t.requestTime) {
                             data3DLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.NC_ADDRESS + 1, 'C', DataStorage.data3d_t.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS + 1, 'C', DataStorage.data3d_t.getAsInt());
                             //System.out.println("3D autosend");
                         }
                         if (DataStorage.lcddata.requestTime > 0 && System.currentTimeMillis() + sleeptime > lcdLasttime + DataStorage.lcddata.requestTime) {
                             lcdLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
                             //System.out.println("LCD autosend");
                         }
                         break;
                     case FC:
                         if (DataStorage.FCDebugOut.requestTime > 0 && System.currentTimeMillis() + sleeptime > FCdebugLasttime + DataStorage.FCDebugOut.requestTime) {
                             FCdebugLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
                             //System.out.println("Debug autosend");
                         }
                         if (DataStorage.data3d_t.requestTime > 0 && System.currentTimeMillis() + sleeptime > data3DLasttime + DataStorage.data3d_t.requestTime) {
                             data3DLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(Serial.FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                            DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
                             //System.out.println("3D autosend");
                         }
                         break;

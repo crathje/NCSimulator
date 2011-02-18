@@ -20,7 +20,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
-import de.mylifesucks.oss.ncsimulator.protocol.Serial;
+import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -53,7 +53,7 @@ public class MainPanel extends JPanel {
 
         Box center = Box.createHorizontalBox();
         center.add(Box.createHorizontalGlue());
-        Vector<String> portlist = Serial.getPorts();
+        Vector<String> portlist = SerialComm.getPorts();
         ports = new JComboBox(portlist);
         center.add(ports);
 
@@ -74,7 +74,7 @@ public class MainPanel extends JPanel {
                 ports.setEnabled(false);
                 start.setEnabled(false);
                 DataStorage.preferences.put(SERIALPORT, ports.getSelectedItem().toString());
-                DataStorage.serial = new Serial(ports.getSelectedItem().toString(), isUSB.isSelected());
+                DataStorage.serial = new SerialComm(ports.getSelectedItem().toString(), isUSB.isSelected());
                 DataStorage.encoder = new Encode(DataStorage.serial.getOutputStream());
                 DataStorage.sendThread = new SendThread("Serial send Thread");
                 DataStorage.sendThread.start();
