@@ -15,10 +15,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.prefs.Preferences;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -41,6 +40,7 @@ public class StringElement extends DrawableElement {
     public static final String TEXTXPOSPERCENT = "X position is % of width";
     public static final String TEXTYPOS = "Y position of the text";
     public static final String TEXTYPOSPERCENT = "Y position is % of height";
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static ArrayList<String> fontMap;
     private c_intElement value;
     private c_intElement textSize;
@@ -214,9 +214,9 @@ public class StringElement extends DrawableElement {
     public String valueToString() {
         String drawString = getTextValue();
         try {
-            String me = String.valueOf(value.getValue());
+            String me = decimalFormat.format(value.getValue());
             int decimals = getDecimals();
-
+            me = me.replace(",", ".");
             if (me.contains(".")) {
                 while (me.substring(me.indexOf(".")).length() < decimals + 1) {
                     me = me + "0";
