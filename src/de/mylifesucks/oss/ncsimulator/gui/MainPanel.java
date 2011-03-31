@@ -291,7 +291,7 @@ public class MainPanel extends JPanel {
 
         // this can save a lot of trouble when interfacing with the MK-Tool :)
         if (DataStorage.naviData.Version.value == 0) {
-            DataStorage.naviData.Version.value = 4;
+            DataStorage.naviData.Version.value = 5;
         }
 
         tabbed.addTab("Log", DataStorage.logPanel);
@@ -347,14 +347,14 @@ public class MainPanel extends JPanel {
 
 
         DataStorage.FCversion.SWMajor.value = 0;
-        DataStorage.FCversion.SWMinor.value = 82;
+        DataStorage.FCversion.SWMinor.value = 84;
         DataStorage.FCversion.SWPatch.value = 0; // a
         DataStorage.FCversion.ProtoMajor.value = 11;
         DataStorage.FCversion.ProtoMinor.value = 0;
 
         DataStorage.NCversion.SWMajor.value = 0;
-        DataStorage.NCversion.SWMinor.value = 22;
-        DataStorage.NCversion.SWPatch.value = 0; // a
+        DataStorage.NCversion.SWMinor.value = 24;
+        DataStorage.NCversion.SWPatch.value = 1; // a
         DataStorage.NCversion.ProtoMajor.value = 11;
         DataStorage.NCversion.ProtoMinor.value = 0;
 
