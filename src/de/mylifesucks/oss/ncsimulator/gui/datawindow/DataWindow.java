@@ -398,9 +398,9 @@ public class DataWindow extends JWindow {
         myPref.putInt(POSX, getLocation().x);
         myPref.putInt(POSY, getLocation().y);
 //        myPref.putInt(FGCOLOR, fgColor.getRGB());
-//        myPref.putInt(BGCOLOR, bgColor.getRGB());
+        myPref.putInt(BGCOLOR, bgColor.getRGB());
 //        myPref.putInt(FOREGROUNDTRANSPARENTVALUE, foregroundtransparentvalue);
-//        myPref.putInt(BACKGROUNDTRANSPARENTVALUE, backgroundtransparentvalue);
+        myPref.putInt(BACKGROUNDTRANSPARENTVALUE, backgroundtransparentvalue);
 //        myPref.putInt(DECIMALS, decimals);
 //        myPref.putLong(ADDOFFSET, adddoffset);
 
@@ -802,6 +802,7 @@ public class DataWindow extends JWindow {
                 DataWindow.this.setAlwaysOnTop(false);
                 dialog.setVisible(true);
                 dialog.toFront();
+                DataWindow.this.persistWindow();
 //                persistWindow();
             }
             //                DataWindow.this.toBack();

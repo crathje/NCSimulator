@@ -13,13 +13,14 @@ import java.util.Observer;
 
 /**
  * Navi-OSD-Data Struct
- * adapted from: http://svn.mikrokopter.de/filedetails.php?repname=NaviCtrl&path=/tags/V0.22a/uart1.h
+ * adapted from: http://svn.mikrokopter.de/filedetails.php?repname=NaviCtrl&path=/tags/V0.24b/uart1.h
  *
  *  @author Claas Anders "CaScAdE" Rathje
  */
 public class NaviData_t extends c_int implements Observer{
 
     public static final String[] FC_FLAGS = {"MOTOR_RUN", "FLY", "CALIBRATE", "START", "NOTLANDUNG", "LOWBAT", "SPI_RX_ERR", "I2CERR"};
+    public static final String[] FC_FLAGS2 = {"CAREFREE", "ALTITUDE_CONTROL"};
     public static final String[] NC_FLAGS = {"FREE", "PH", "CH", "RANGE_LIMIT", "NOSERIALLINK", "TARGET_REACHED", "MANUAL_CONTROL", "GPS_OK "};
     public static final String[] ERROR_CODE = {"FC !COMPAT", "NO FC COMM", "NO MK3MAG COMM"};
     public u8 Version = new u8("Version"); // version of the data structure
@@ -47,7 +48,7 @@ public class NaviData_t extends c_int implements Observer{
     public u8 OperatingRadius = new u8("OperatingRadius",300); // current operation radius around the Home Position in m
     public s16 TopSpeed = new s16("TopSpeed"); // velocity in vertical direction in cm/s
     public u8 TargetHoldTime = new u8("TargetHoldTime"); // time in s to stay at the given target, counts down to 0 if target has been reached
-    public u8 RC_RSSI = new u8("RC_RSSI"); // Receiver signal strength (since version 2 added)
+    public u8Flags FCStatusFlags2 = new u8Flags("FCFlags2", FC_FLAGS2); // StatusFlags2 (since version 5 added)
     public s16 SetpointAltitude = new s16("SetpointAltitude",-3000,3000); // setpoint for altitude
     public u8 Gas = new u8("Gas"); // for future use
     public u16 Current = new u16("Current",1500); // actual current in 0.1A steps
@@ -81,7 +82,7 @@ public class NaviData_t extends c_int implements Observer{
         allAttribs.add(OperatingRadius);
         allAttribs.add(TopSpeed);
         allAttribs.add(TargetHoldTime);
-        allAttribs.add(RC_RSSI);
+        allAttribs.add(FCStatusFlags2);
         allAttribs.add(SetpointAltitude);
         allAttribs.add(Gas);
         allAttribs.add(Current);

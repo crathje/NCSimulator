@@ -26,5 +26,9 @@ public class PPMArray extends c_int {
             PPMArray[i] = c;
             allAttribs.add(c);
         }
+
+//        PPMArray[13].setValue(-125, false);
+//        PPMArray[16].setValue(125, false);
+
     }
 }

@@ -21,7 +21,7 @@ import gnu.io.*;
  *
  * @author Claas Anders "CaScAdE" Rathje
  */
-public class CommunicationBase  {
+public class CommunicationBase {
 
     // slave addresses http://svn.mikrokopter.de/filedetails.php?repname=NaviCtrl&path=%2Ftags%2FV0.20c%2Fmkprotocol.h
     public static final int ANY_ADDRESS = 0;
@@ -30,17 +30,14 @@ public class CommunicationBase  {
     public static final int MK3MAG_ADDRESS = 3;
     public static final int MKOSD_ADDRESS = 4;
     public static final int BL_ADDRESS = 5;
-
     InputStream inputStream;
     static OutputStream outputStream;
 
     public OutputStream getOutputStream() {
         return outputStream;
     }
-
     public static final int MAX_EMPFANGS_BUFF = 190;
     volatile int RxdBuffer[] = new int[MAX_EMPFANGS_BUFF];
-
     int crc;
     int crc1, crc2, buf_ptr;
     char UartState = 0;
@@ -48,7 +45,7 @@ public class CommunicationBase  {
     volatile boolean NeuerDatensatzEmpfangen = false;
     int AnzahlEmpfangsBytes = 0;
 
-    protected  void USART0_RX_vect(int SioTmp) {
+    protected void USART0_RX_vect(int SioTmp) {
         if (buf_ptr >= MAX_EMPFANGS_BUFF) {
             UartState = 0;
 //            System.out.println("overflow");
@@ -80,14 +77,16 @@ public class CommunicationBase  {
 
                 }*/
 
+                final int RxdBuffer_work[] = new int[MAX_EMPFANGS_BUFF];
+                System.arraycopy(RxdBuffer, 0, RxdBuffer_work, 0, RxdBuffer.length);
                 // thread away the data handling 
-                Runnable r = new Runnable() {
+                DataStorage.executors.submit(new Runnable() {
 
                     public void run() {
-                        BearbeiteRxDaten();
+
+                        BearbeiteRxDaten(RxdBuffer_work);
                     }
-                };
-                DataStorage.executors.submit(r);
+                });
             }
         } else {
             switch (UartState) {
@@ -122,7 +121,7 @@ public class CommunicationBase  {
     int RxDataLen = 0;
     int pRxData = 0;
 
-    public void Decode64() {// die daten werden im rx buffer dekodiert, das geht nur, weil aus 4 byte immer 3 gemacht werden.
+    public void Decode64(int[] RxdBuffer) {// die daten werden im rx buffer dekodiert, das geht nur, weil aus 4 byte immer 3 gemacht werden.
         int a, b, c, d;
         int x, y, z;
         int ptrIn = 3; // start at begin of data block
@@ -168,7 +167,7 @@ public class CommunicationBase  {
 
     }
 
-    public void BearbeiteRxDaten() {
+    public void BearbeiteRxDaten(int[] RxdBuffer) {
         if (!NeuerDatensatzEmpfangen) {
             return;
         }
@@ -189,7 +188,7 @@ public class CommunicationBase  {
 //        }
 //        System.out.println();
 //        System.out.print(" decoded: ");
-        Decode64();
+        Decode64(RxdBuffer);
 
 
 
@@ -342,7 +341,7 @@ public class CommunicationBase  {
                                 case 'm':// "Write Mixer
                                     break;
                                 case 'p': // get PPM Channels
-                                    DataStorage.encoder.send_command(NC_ADDRESS, 'P', DataStorage.ppmarray.getAsInt());
+                                    DataStorage.encoder.send_command(FC_ADDRESS, 'P', DataStorage.ppmarray.getAsInt());
                                     break;
                                 case 'q':// "Get"-Anforderung für Settings
                                     int para = RxdBuffer[pRxData];

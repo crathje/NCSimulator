@@ -8,15 +8,19 @@
 package de.mylifesucks.oss.ncsimulator.gui.datawindow.elements;
 
 import de.mylifesucks.oss.graphichelpers.DrawStringHelpers;
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -30,16 +34,21 @@ public class StringElement extends DrawableElement {
     public static final String SPRINTFSTRING = "sprintf String";
     public static final String DECIMALS = "Number of decimals after coma";
     public static final String MAXSIZE = "Draw Text centered & as big as possible (computed before transformations)";
+    public static final String FONTNAME = "Name of the Font";
+    public static final String STANDARDFONT = "Dialog";
     public static final String TEXTXPOS = "X position of the text";
     public static final String TEXTXPOSPERCENT = "X position is % of width";
     public static final String TEXTYPOS = "Y position of the text";
     public static final String TEXTYPOSPERCENT = "Y position is % of height";
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private static ArrayList<String> fontMap;
     private c_intElement value;
     private c_intElement textSize;
     private c_intElement textXPos;
     private c_intElement textYPos;
     private JTextField sprintfTextField;
     private JTextField decimalsTextField;
+    private JComboBox fontNames;
     private JCheckBox maxSize;
     private JCheckBox textXPosPercent;
     private JCheckBox textYPosPercent;
@@ -50,6 +59,7 @@ public class StringElement extends DrawableElement {
         textSize = new c_intElement(myPref, myName + "textSize");
         textXPos = new c_intElement(myPref, myName + "textXPos");
         textYPos = new c_intElement(myPref, myName + "textYPos");
+
 
         initMyComponent();
     }
@@ -92,6 +102,30 @@ public class StringElement extends DrawableElement {
         });
         panel.add(sprintfTextField, gbc);
 
+        gbc.gridy++;
+        gbc.gridx = 0;
+        panel.add(new JLabel(FONTNAME), gbc);
+
+
+        if (fontMap == null) {
+            GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            Font[] af = e.getAllFonts();
+            String[] afn = new String[af.length];
+            int i = 0;
+            for (Font f : af) {
+                afn[i++] = f.getName();
+            }
+            Arrays.sort(afn);
+            fontMap = new ArrayList<String>(afn.length);
+            for (String s : afn) {
+                fontMap.add(s);
+            }
+        }
+        fontNames = new JComboBox(fontMap.toArray());
+        fontNames.setSelectedItem(myPref.get(myName + FONTNAME, STANDARDFONT));
+        gbc.gridy++;
+        gbc.gridx = 0;
+        panel.add(fontNames, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -171,14 +205,18 @@ public class StringElement extends DrawableElement {
         myPref.putBoolean(myName + MAXSIZE, maxSize.isSelected());
         myPref.putBoolean(myName + TEXTXPOSPERCENT, textXPosPercent.isSelected());
         myPref.putBoolean(myName + TEXTYPOSPERCENT, textYPosPercent.isSelected());
+        if (fontNames.getSelectedIndex() < 0 || fontNames.getSelectedIndex() > fontNames.getSelectedObjects().length) {
+            fontNames.setSelectedItem(0);
+        }
+        myPref.put(myName + FONTNAME, fontNames.getSelectedObjects()[0].toString());
     }
 
     public String valueToString() {
         String drawString = getTextValue();
         try {
-            String me = String.valueOf(value.getValue());
+            String me = decimalFormat.format(value.getValue());
             int decimals = getDecimals();
-
+            me = me.replace(",", ".");
             if (me.contains(".")) {
                 while (me.substring(me.indexOf(".")).length() < decimals + 1) {
                     me = me + "0";
@@ -213,6 +251,7 @@ public class StringElement extends DrawableElement {
 //        Color c = getForegroundColor(true);
         g2d.setColor(getForegroundColor(true));
 
+        g2d.setFont(new Font(fontNames.getSelectedItem().toString(), Font.PLAIN, (int) textSize.getValue()));
         String drawString = valueToString();
         if (getMaxSize()) {
             DrawStringHelpers.drawStringBiggest(g2d, d, drawString);

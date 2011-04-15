@@ -7,6 +7,13 @@
  *
  */
 
+20110331-1700
+        *small fix in datawindow transparency and bg-color savings
+        *small fix for observering combined structs
+
+20110331-1345
+        *changes for NC 0.24b and FC 0.84a
+        @in case you get index out of bounds error when using MK-Tool set the "Kanalbelegung" (0 - 11) in Parameter->Set 5
 
 20110215-1730
         *git import

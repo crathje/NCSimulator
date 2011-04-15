@@ -127,7 +127,6 @@ public class paramset_t extends c_int {
         int[] ret = super.getAsInt();
         ret = c_int.concatArray(new int[]{index}, ret);
         return ret;
-
     }
 
     /**
@@ -248,6 +247,9 @@ public class paramset_t extends c_int {
         for (int i = 0; i < Kanalbelegung.length; i++) {
             u8 c = new u8(index + " Kanalbelegung " + i);
             Kanalbelegung[i] = c;
+            if (c.value == 0) {
+                c.setValue(i, false);
+            }
             allAttribs.add(c);
         }
         allAttribs.add(GlobalConfig);

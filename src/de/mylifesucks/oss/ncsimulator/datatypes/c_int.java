@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
@@ -43,10 +44,8 @@ public abstract class c_int extends Observable {
     JTextField valueField;
     public JComponent nameLabel = null;
     public LinkedList<c_int> allAttribs = null;
-
     protected Integer minValue;
     protected Integer maxValue;
-
 
     public LinkedList<c_int> getList() {
         LinkedList<c_int> poss = new LinkedList<c_int>();
@@ -86,6 +85,16 @@ public abstract class c_int extends Observable {
     @Override
     public String toString() {
         return getSerializeName();
+    }
+
+    @Override
+    public synchronized void addObserver(Observer o) {
+        super.addObserver(o);
+        if (allAttribs != null && allAttribs.size() > 0) {
+            for (c_int c : allAttribs) {
+                c.addObserver(o);
+            }
+        }
     }
 
     public void loadFromInt(int RxdBuffer[], int pRxData) {
