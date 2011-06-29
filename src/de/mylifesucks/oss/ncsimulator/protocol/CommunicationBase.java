@@ -244,14 +244,17 @@ public class CommunicationBase {
 //                                    System.out.println(out);
                                     Waypoint_t rec = new Waypoint_t("recieved WP");
                                     rec.loadFromInt(RxdBuffer, pRxData);
+
+                                        System.out.println("recieved WP " + rec.Index.value);
 //
                                     if ((rec.Position.Status.value == Waypoint_t.INVALID) && (rec.Index.value == 0)) {
-//                                        System.out.println("Clear WP");
+                                        System.out.println("Clear WP");
                                         Waypoint_t.clearWP();
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     } else {
-                                        if (rec.Index.value == Waypoint_t.waypointList.size() + 1) {
-//                                            System.out.println("Append WP");
+                                            System.out.println("Check " + rec.Index.value + " < " + (Waypoint_t.waypointList.length + 1));
+                                        if (rec.Index.value < Waypoint_t.waypointList.length + 1) {
+                                            System.out.println("Set WP "+rec.Index.value);
                                             Waypoint_t.addWP(rec);
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                         }
@@ -261,10 +264,10 @@ public class CommunicationBase {
                                 case 'x'://  Read Waypoint from List
                                     System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
                                     int index = RxdBuffer[pRxData];
-                                    if (index <= Waypoint_t.waypointList.size()) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{Waypoint_t.waypointList.size(), index}, Waypoint_t.waypointList.get(index - 1).getAsInt()));
+                                    if (index <= Waypoint_t.waypointList.length) {
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{Waypoint_t.waypointList.length, index}, Waypoint_t.waypointList[index - 1].getAsInt()));
                                     } else {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{Waypoint_t.waypointList.size()});
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{Waypoint_t.waypointList.length});
                                     }
                                     break;
                                 case 'j':// Set/Get NC-Parameter
@@ -433,6 +436,18 @@ public class CommunicationBase {
                             switch (RxdBuffer[2]) {
                                 case 'v': // request for version info
                                     DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'V', DataStorage.MK3version.getAsInt());
+                                    break;
+                                case 'a':// Texte der Analogwerte
+                                    int index = RxdBuffer[pRxData];
+                                    if (index > 31) {
+                                        index = 31;
+                                    }
+                                    DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'A', DataStorage.MK3MAGDebugOut.Analog[index].getLabelArray());
+                                    break;
+                                case 'd': // Poll the debug data
+                                        if ((DataStorage.MK3MAGDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'D', DataStorage.MK3MAGDebugOut.getAsInt());
+                                    }
                                     break;
                             }
                     }

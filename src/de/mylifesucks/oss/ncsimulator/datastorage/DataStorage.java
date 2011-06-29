@@ -62,6 +62,8 @@ public class DataStorage {
     public static str_VersionInfo MK3version = new str_VersionInfo("MK3Mag");
     public static str_DebugOut FCDebugOut = new str_DebugOut("FC", CommunicationBase.FC_ADDRESS);
     public static str_DebugOut NCDebugOut = new str_DebugOut("NC", CommunicationBase.NC_ADDRESS);
+    public static str_DebugOut MK3MAGDebugOut = new str_DebugOut("MK3MAG", CommunicationBase.MK3MAG_ADDRESS);
+
     public static paramset_t paramset[] = new paramset_t[5];
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();

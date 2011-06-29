@@ -43,6 +43,11 @@ public class str_VersionInfo extends c_int {
         allAttribs.add(ProtoMajor);
         allAttribs.add(ProtoMinor);
         allAttribs.add(SWPatch);
+        allAttribs.add(HardwareError[0]);
+        allAttribs.add(HardwareError[1]);
+        allAttribs.add(HardwareError[2]);
+        allAttribs.add(HardwareError[3]);
+        allAttribs.add(HardwareError[4]);
 
 
         for (c_int c : allAttribs) {

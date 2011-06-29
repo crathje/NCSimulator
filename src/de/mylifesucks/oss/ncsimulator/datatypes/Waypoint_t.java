@@ -7,6 +7,7 @@
  */
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -15,7 +16,7 @@ import java.util.LinkedList;
  * @author Claas Anders "CaScAdE" Rathje
  */
 public class Waypoint_t extends c_int {
-    public static LinkedList<Waypoint_t> waypointList = new LinkedList<Waypoint_t>();
+    public static Waypoint_t[] waypointList = new Waypoint_t[31];
 
     public GPS_Pos_t Position;             // the gps position of the waypoint, see ubx.h for details
     public s16 Heading;                    // orientation, future implementation
@@ -60,9 +61,26 @@ public class Waypoint_t extends c_int {
     }
 
     public static void clearWP() {
-        waypointList.clear();
+
+        Waypoint_t wp = new Waypoint_t("");
+        wp.Position.Status.value = INVALID;
+        wp.Position.Latitude.value = 0;
+        wp.Position.Longitude.value = 0;
+        wp.Position.Altitude.value = 0;
+        wp.Heading.value = 361; 		// invalid value
+        wp.ToleranceRadius.value = 0;	// in meters, if the MK is within that range around the target, then the next target is triggered
+        wp.HoldTime.value = 0;			// in seconds, if the was once in the tolerance area around a WP, this time defines the delay before the next WP is triggered
+        wp.Type.value = 255;
+        wp.Event_Flag.value = 0;		// future implementation
+        //wp.AltitudeRate.value = 0;		// no change of setpoint
+
+        for (int i = 0; i < waypointList.length; i++) {
+            wp.Index.value = i;
+            waypointList[i]=wp;
+        }
     }
+
     public static void addWP(Waypoint_t wp) {
-        waypointList.add(wp);
+        waypointList[(int) wp.Index.value-1]=wp;
     }
 }
