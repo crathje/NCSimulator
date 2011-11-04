@@ -27,6 +27,7 @@ import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,8 +64,9 @@ public class DataStorage {
     public static str_DebugOut FCDebugOut = new str_DebugOut("FC", CommunicationBase.FC_ADDRESS);
     public static str_DebugOut NCDebugOut = new str_DebugOut("NC", CommunicationBase.NC_ADDRESS);
     public static str_DebugOut MK3MAGDebugOut = new str_DebugOut("MK3MAG", CommunicationBase.MK3MAG_ADDRESS);
-
     public static paramset_t paramset[] = new paramset_t[5];
+    public static int activeParamset=3;
+    public static ArrayList<Waypoint_t> waypointList = new ArrayList<Waypoint_t>();
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
@@ -99,6 +101,46 @@ public class DataStorage {
             }
         }
 
+        if (waypointList == null) {
+            waypointList = new ArrayList<Waypoint_t>();
+        }
+
+    }
+
+    public static void clearWP() {
+        waypointList.clear();
+    }
+
+    public static Waypoint_t getEmptyWP(int index) {
+        Waypoint_t wp = new Waypoint_t("WP" + index);
+        wp.Position.Status.value = Waypoint_t.INVALID;
+        wp.Position.Latitude.value = 0;
+        wp.Position.Longitude.value = 0;
+        wp.Position.Altitude.value = 0;
+        wp.Heading.value = 361; 		// invalid value
+        wp.ToleranceRadius.value = 0;	// in meters, if the MK is within that range around the target, then the next target is triggered
+        wp.HoldTime.value = 0;			// in seconds, if the was once in the tolerance area around a WP, this time defines the delay before the next WP is triggered
+        wp.Type.value = Waypoint_t.POINT_TYPE_INVALID;
+        wp.Event_Flag.value = 0;		// future implementation
+        wp.AltitudeRate.value = 0;		// no change of setpoint
+
+        wp.Index.value = index + 1;
+        return wp;
+    }
+
+    public static void addWP(Waypoint_t wp) {
+
+        int wpIndex= (int)wp.Index.value-1;
+
+        System.out.println("Add WP " + wp.Index.value);
+        wp.printOut();
+
+        while(waypointList.size()<wpIndex){
+            System.out.println("Add WP " + waypointList.size());
+            waypointList.add(getEmptyWP(waypointList.size()));
+        }
+
+        waypointList.add(wp);
     }
 
     public static synchronized DataStorage getInstance() {

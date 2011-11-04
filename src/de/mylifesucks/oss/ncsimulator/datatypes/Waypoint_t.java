@@ -8,6 +8,7 @@
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -16,7 +17,6 @@ import java.util.LinkedList;
  * @author Claas Anders "CaScAdE" Rathje
  */
 public class Waypoint_t extends c_int {
-    public static Waypoint_t[] waypointList = new Waypoint_t[31];
 
     public GPS_Pos_t Position;             // the gps position of the waypoint, see ubx.h for details
     public s16 Heading;                    // orientation, future implementation
@@ -26,10 +26,14 @@ public class Waypoint_t extends c_int {
     public u8 Index;              // to indentify different waypoints, workaround for bad communications PC <-> NC
     public u8 Type;                               // typeof Waypoint
     public u8 WP_EventChannelValue;  //
+    public u8 AltitudeRate;
     public u8 reserve[];             // reserve
     public static final int INVALID = 0x00;
     public static final int NEWDATA = 0x01;
     public static final int PROCESSED = 0x02;
+    public static final int POINT_TYPE_INVALID = 255;
+    public static final int POINT_TYPE_WP = 0;
+    public static final int POINT_TYPE_POI = 1;
 
     public Waypoint_t(String prefix) {
         super();
@@ -43,7 +47,8 @@ public class Waypoint_t extends c_int {
         Index = new u8(prefix + " Index");
         Type = new u8(prefix + " Type");
         WP_EventChannelValue = new u8(prefix + " WP_EventChannelValue");
-        reserve = new u8[9];
+        AltitudeRate= new u8(prefix + " AltitudeRate");
+        reserve = new u8[8];
         for (int i = 0; i < reserve.length; i++) {
             reserve[i] = new u8(prefix + "" + i);
         }
@@ -55,32 +60,8 @@ public class Waypoint_t extends c_int {
         allAttribs.add(Index);
         allAttribs.add(Type);
         allAttribs.add(WP_EventChannelValue);
-        for (int i = 0; i < reserve.length; i++) {
-            allAttribs.add(reserve[i]);
-        }
+        allAttribs.add(AltitudeRate);
+        allAttribs.addAll(Arrays.asList(reserve));
     }
 
-    public static void clearWP() {
-
-        Waypoint_t wp = new Waypoint_t("");
-        wp.Position.Status.value = INVALID;
-        wp.Position.Latitude.value = 0;
-        wp.Position.Longitude.value = 0;
-        wp.Position.Altitude.value = 0;
-        wp.Heading.value = 361; 		// invalid value
-        wp.ToleranceRadius.value = 0;	// in meters, if the MK is within that range around the target, then the next target is triggered
-        wp.HoldTime.value = 0;			// in seconds, if the was once in the tolerance area around a WP, this time defines the delay before the next WP is triggered
-        wp.Type.value = 255;
-        wp.Event_Flag.value = 0;		// future implementation
-        //wp.AltitudeRate.value = 0;		// no change of setpoint
-
-        for (int i = 0; i < waypointList.length; i++) {
-            wp.Index.value = i;
-            waypointList[i]=wp;
-        }
-    }
-
-    public static void addWP(Waypoint_t wp) {
-        waypointList[(int) wp.Index.value-1]=wp;
-    }
 }

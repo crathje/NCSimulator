@@ -10,6 +10,10 @@ package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
+import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
+import de.mylifesucks.oss.ncsimulator.datatypes.u16;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +25,7 @@ import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
 import de.mylifesucks.oss.ncsimulator.protocol.TcpComm;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -83,7 +88,7 @@ public class MainPanel extends JPanel {
 
         Box center = Box.createHorizontalBox();
         center.add(Box.createHorizontalGlue());
-        
+
         ports = new JComboBox(SerialComm.getPorts().keySet().toArray());
         center.add(ports);
 
@@ -303,6 +308,47 @@ public class MainPanel extends JPanel {
         JScrollPane osdScrollpane = new JScrollPane(osdPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("NC OSD Values", osdScrollpane);
 
+        DataStorage.clearWP();
+
+//        JTabbedPane waipointsPanel = new JTabbedPane();
+//
+//        for (int i = 0; i < DataStorage.waypointList.length; i++) {
+//            JPanel setPanel = new JPanel(new GridBagLayout());
+//            GridBagConstraints paramgbc = new GridBagConstraints();
+//            paramgbc.gridy++;
+//
+//            Waypoint_t wp = DataStorage.waypointList[i];
+//            wp.addToPanel(setPanel, paramgbc);
+//
+//            JScrollPane paramScrPanel = new JScrollPane(setPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//
+//            waipointsPanel.add("Waypoint " + (i + 1), paramScrPanel);
+//        }
+//        tabbed.addTab("Waipoints", waipointsPanel);
+//
+//
+//
+//        JPanel wpPanel = new JPanel(new GridBagLayout());
+//        GridBagConstraints wpdgbc = new GridBagConstraints();
+//        wpdgbc.gridy++;
+//        for (int i = 0; i < Waypoint_t.waypointList.length; i++) {
+//            wpPanel.add(new JLabel("Waypoint #" + i), wpdgbc);
+//            wpdgbc.gridy++;
+//
+//            JPanel wpePanel = new JPanel(new GridBagLayout());
+//            GridBagConstraints wpedgbc = new GridBagConstraints();
+//
+//            wpePanel.add(new JLabel("Data Waypoint #" + i), wpedgbc);
+//            wpedgbc.gridx=0;
+//            wpedgbc.gridy++;
+//            Waypoint_t.waypointList[i].addToPanel(wpePanel, wpedgbc);
+//
+//            wpPanel.add(wpePanel, wpdgbc);
+//            wpdgbc.gridy++;
+//        }
+//        //DataStorage.naviData.addToPanel(osdPanel, osdgbc);
+//        JScrollPane wpScrollpane = new JScrollPane(wpPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//        tabbed.addTab("Waipoints", wpScrollpane);
 
 
         JPanel debugFCValPanel = new JPanel(new GridBagLayout());

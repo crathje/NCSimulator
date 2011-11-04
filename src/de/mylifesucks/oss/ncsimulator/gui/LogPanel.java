@@ -76,7 +76,7 @@ public class LogPanel extends JPanel {
 
         StyleConstants.setFontSize(green, 10);
         StyleConstants.setFontFamily(green, "Monospaced");
-        StyleConstants.setForeground(green, Color.green);
+        StyleConstants.setForeground(green, Color.blue);
 
         try {
             textPane.setCharacterAttributes(headingStyle, true);

@@ -223,7 +223,7 @@ public class CommunicationBase {
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for the text of the error status ");
                                     break;
                                 case 's'://  new target position
-//                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " new target position");
+                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " new target position");
                                     break;
                                 case 'u': // redirect debug uart
                                     switch (RxdBuffer[pRxData]) {
@@ -242,32 +242,36 @@ public class CommunicationBase {
                                 case 'w'://  Append Waypoint to List
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Append Waypoint to List");
 //                                    System.out.println(out);
-                                    Waypoint_t rec = new Waypoint_t("recieved WP");
+
+                                    Waypoint_t rec1 = new Waypoint_t("recieved WP");
+                                    rec1.loadFromInt(RxdBuffer, pRxData);
+
+                                    Waypoint_t rec = new Waypoint_t("WP" + rec1.Index.value);
                                     rec.loadFromInt(RxdBuffer, pRxData);
 
-                                        System.out.println("recieved WP " + rec.Index.value);
+
+
+                                    System.out.println("recieved WP " + rec.Index.value);
 //
                                     if ((rec.Position.Status.value == Waypoint_t.INVALID) && (rec.Index.value == 0)) {
                                         System.out.println("Clear WP");
-                                        Waypoint_t.clearWP();
+                                        DataStorage.clearWP();
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     } else {
-                                            System.out.println("Check " + rec.Index.value + " < " + (Waypoint_t.waypointList.length + 1));
-                                        if (rec.Index.value < Waypoint_t.waypointList.length + 1) {
-                                            System.out.println("Set WP "+rec.Index.value);
-                                            Waypoint_t.addWP(rec);
+                                            System.out.println("Set WP " + rec.Index.value);
+                                            DataStorage.addWP(rec);
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
-                                        }
                                     }
 //                                    rec.printOut();
                                     break;
                                 case 'x'://  Read Waypoint from List
                                     System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
                                     int index = RxdBuffer[pRxData];
-                                    if (index <= Waypoint_t.waypointList.length) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{Waypoint_t.waypointList.length, index}, Waypoint_t.waypointList[index - 1].getAsInt()));
+                                    System.out.println("Read index " + index);
+                                    if (index <= DataStorage.waypointList.size()) {
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.size(), index}, DataStorage.waypointList.get(index - 1).getAsInt()));
                                     } else {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{Waypoint_t.waypointList.length});
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.size()});
                                     }
                                     break;
                                 case 'j':// Set/Get NC-Parameter
@@ -348,6 +352,9 @@ public class CommunicationBase {
                                     break;
                                 case 'q':// "Get"-Anforderung für Settings
                                     int para = RxdBuffer[pRxData];
+                                    if ( para==0xFF )
+                                        para=DataStorage.activeParamset;
+                                    
                                     if (para > 5) {
                                         para = 5;
                                     }
@@ -358,6 +365,9 @@ public class CommunicationBase {
 //                                    System.out.println(" setting to FC ");
                                     if (1 <= RxdBuffer[pRxData] && RxdBuffer[pRxData] <= 5) {
                                         tempchar = RxdBuffer[pRxData];
+                                        
+                                        DataStorage.activeParamset=tempchar;
+                                       System.out.println("Set active setting to " + tempchar);
                                         //tempchar1 = GetActiveParamSet();
 //                                        System.out.println(RxDataLen + " RxDataLen");
 //                                        for (int i : RxdBuffer) {
@@ -372,6 +382,11 @@ public class CommunicationBase {
                                     DataStorage.encoder.send_command(FC_ADDRESS, 'S', new int[]{tempchar});
                                     break;
                                 case 'f': // auf anderen Parametersatz umschalten
+                                    {
+                                       tempchar = RxdBuffer[pRxData];
+                                       System.out.println("Set active setting to " + tempchar);
+                                       DataStorage.encoder.send_command(FC_ADDRESS, 'F', new int[]{tempchar});
+                                    }
                                     break;
                                 case 'y':// serial Potis
 //                                    PPM_in[13] = (signed char) pRxData[0]; PPM_in[14] = (signed char) pRxData[1]; PPM_in[15] = (signed char) pRxData[2]; PPM_in[16] = (signed char) pRxData[3];
@@ -445,7 +460,7 @@ public class CommunicationBase {
                                     DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'A', DataStorage.MK3MAGDebugOut.Analog[index].getLabelArray());
                                     break;
                                 case 'd': // Poll the debug data
-                                        if ((DataStorage.MK3MAGDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                    if ((DataStorage.MK3MAGDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
                                         DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'D', DataStorage.MK3MAGDebugOut.getAsInt());
                                     }
                                     break;
