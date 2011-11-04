@@ -17,6 +17,52 @@ import java.util.LinkedList;
  */
 public class paramset_t extends c_int {
 
+    int EEPARAM_REVISION = 88;
+    //GlobalConfig
+    int CFG_HOEHENREGELUNG = 0x01;
+    int CFG_HOEHEN_SCHALTER = 0x02;
+    int CFG_HEADING_HOLD = 0x04;
+    int CFG_KOMPASS_AKTIV = 0x08;
+    int CFG_KOMPASS_FIX = 0x10;
+    int CFG_GPS_AKTIV = 0x20;
+    int CFG_ACHSENKOPPLUNG_AKTIV = 0x40;
+    int CFG_DREHRATEN_BEGRENZER = 0x80;
+//BitConfig
+    int CFG_LOOP_OBEN = 0x01;
+    int CFG_LOOP_UNTEN = 0x02;
+    int CFG_LOOP_LINKS = 0x04;
+    int CFG_LOOP_RECHTS = 0x08;
+    int CFG_MOTOR_BLINK1 = 0x10;
+    int CFG_MOTOR_OFF_LED1 = 0x20;
+    int CFG_MOTOR_OFF_LED2 = 0x40;
+    int CFG_MOTOR_BLINK2 = 0x80;
+// ExtraConfig
+    int CFG2_HEIGHT_LIMIT = 0x01;
+    int CFG2_VARIO_BEEP = 0x02;
+    int CFG_SENSITIVE_RC = 0x04;
+    int CFG_3_3V_REFERENCE = 0x08;
+    int CFG_NO_RCOFF_BEEPING = 0x10;
+    int CFG_GPS_AID = 0x20;
+    int CFG_LEARNABLE_CAREFREE = 0x40;
+    int CFG_IGNORE_MAG_ERR_AT_STARTUP = 0x80;
+// bit mask for ParamSet.Config0
+    int CFG0_AIRPRESS_SENSOR = 0x01;
+    int CFG0_HEIGHT_SWITCH = 0x02;
+    int CFG0_HEADING_HOLD = 0x04;
+    int CFG0_COMPASS_ACTIVE = 0x08;
+    int CFG0_COMPASS_FIX = 0x10;
+    int CFG0_GPS_ACTIVE = 0x20;
+    int CFG0_AXIS_COUPLING_ACTIVE = 0x40;
+    int CFG0_ROTARY_RATE_LIMITER = 0x80;
+// defines for the receiver selection
+    int RECEIVER_PPM = 0;
+    int RECEIVER_SPEKTRUM = 1;
+    int RECEIVER_SPEKTRUM_HI_RES = 2;
+    int RECEIVER_SPEKTRUM_LOW_RES = 3;
+    int RECEIVER_JETI = 4;
+    int RECEIVER_ACT_DSL = 5;
+    int RECEIVER_HOTT = 6;
+    int RECEIVER_UNKNOWN = 0xFF;
     u8 Revision;
     u8 Kanalbelegung[];// GAS[0], GIER[1],NICK[2], ROLL[3], POTI1, POTI2, POTI3
     u8Flags GlobalConfig;// 0x01;
@@ -31,7 +77,7 @@ public class paramset_t extends c_int {
     u8 Hoehe_StickNeutralPoint;// Wert : 0-250
     u8 Stick_P;// Wert : 1-6
     u8 Stick_D;// Wert : 0-64
-    u8 Gier_P;// Wert : 1-20
+    u8 StickGier_P;// Wert : 1-20
     u8 Gas_Min;// Wert : 0-32
     u8 Gas_Max;// Wert : 33-250
     u8 GyroAccFaktor;// Wert : 1-64
@@ -103,7 +149,7 @@ public class paramset_t extends c_int {
     u8 NaviGpsMinSat;
     u8 NaviStickThreshold;
     u8 NaviWindCorrection;
-    u8 NaviSpeedCompensation;
+    u8 NaviAccCompensation;
     u8 NaviOperatingRadius;
     u8 NaviAngleLimitation;
     u8 NaviPH_LoginTime;
@@ -111,8 +157,12 @@ public class paramset_t extends c_int {
     u8 ExternalControl;// for serial Control
     //---CareFree---------------------------------------------
     u8 OrientationAngle;// Where is the front-direction?
-    u8 OrientationModeControl;// switch for CareFree
+    u8 CareFreeModeControl;// switch for CareFree
     u8 MotorSafetySwitch;
+    u8 MotorSmooth;
+    u8 ComingHomeAltitude;
+    u8 FailSafeTime;
+    u8 MaxAltitude;
     //------------------------------------------------
     u8Flags BitConfig;// (war Loop-Cfg) Bitcodiert: 0x01;/ wird getrennt behandelt
     u8 ServoCompInvert;// //  0x01 ;// WICHTIG!!! am Ende lassen
@@ -127,6 +177,210 @@ public class paramset_t extends c_int {
         int[] ret = super.getAsInt();
         ret = c_int.concatArray(new int[]{index}, ret);
         return ret;
+    }
+
+    void ParamSet_DefaultStickMapping() {
+
+        Kanalbelegung[0].setValue( 1,false);
+        Kanalbelegung[1].setValue( 2,false);
+        Kanalbelegung[2].setValue( 3,false);
+        Kanalbelegung[4].setValue( 4,false);
+        Kanalbelegung[5].setValue( 5,false);
+        Kanalbelegung[6].setValue( 6,false);
+        Kanalbelegung[7].setValue( 7,false);
+        Kanalbelegung[8].setValue( 8,false);
+        Kanalbelegung[9].setValue( 9,false);
+        Kanalbelegung[10].setValue( 10,false);
+        Kanalbelegung[11].setValue( 11,false);
+        Kanalbelegung[11].setValue( 12,false);
+    }
+
+    /***************************************************/
+    /*    Default Values for parameter set 1           */
+    /***************************************************/
+    void CommonDefaults() {
+        Revision.setValue( EEPARAM_REVISION,false);
+
+        //if (PlatinenVersion >= 20) {
+        Gyro_D.setValue( 10,false);
+        Driftkomp.setValue( 0,false);
+        GyroAccFaktor.setValue( 27,false);
+        WinkelUmschlagNick.setValue( 78,false);
+        WinkelUmschlagRoll.setValue( 78,false);
+//        } else {
+//            Gyro_D = 3;
+//            Driftkomp = 32;
+//            GyroAccFaktor = 30;
+//            WinkelUmschlagNick = 85;
+//            WinkelUmschlagRoll = 85;
+//        }
+        GlobalConfig.setValue( CFG_ACHSENKOPPLUNG_AKTIV | CFG_KOMPASS_AKTIV | CFG_GPS_AKTIV | CFG_HOEHEN_SCHALTER,false);
+        ExtraConfig.setValue( CFG_GPS_AID | CFG2_VARIO_BEEP,false);
+        Receiver.setValue( RECEIVER_JETI,false);
+        MotorSafetySwitch.setValue( 0,false);
+        ExternalControl.setValue( 0,false);
+
+        Gas_Min.setValue( 8,false);             // Wert : 0-32
+        Gas_Max.setValue( 230,false);           // Wert : 33-247
+        KompassWirkung.setValue( 64,false);    // Wert : 0-247
+
+        Hoehe_MinGas.setValue( 30,false);
+        MaxHoehe.setValue( 255,false);         // Wert : 0-247   255 -> Poti1
+        Hoehe_P.setValue( 15,false);          // Wert : 0-32
+        Luftdruck_D.setValue( 30,false);          // Wert : 0-247
+        Hoehe_ACC_Wirkung.setValue( 0,false);     // Wert : 0-247
+        Hoehe_HoverBand.setValue( 8,false);     	  // Wert : 0-247
+        Hoehe_GPS_Z.setValue( 64,false);           // Wert : 0-247
+        Hoehe_StickNeutralPoint.setValue( 0,false);// Wert : 0-247 (0.value = Hover-Estimation)
+        Hoehe_Verstaerkung.setValue( 15,false);    // Wert : 0-50 (15 -> ca. +/- 5m/sek bei Stick-Voll-Ausschlag)
+
+        UserParam1.setValue( 0,false);           // zur freien Verwendung
+        UserParam2.setValue( 0,false);           // zur freien Verwendung
+        UserParam3.setValue( 0,false);           // zur freien Verwendung
+        UserParam4.setValue( 0,false);           // zur freien Verwendung
+        UserParam5.setValue( 0,false);           // zur freien Verwendung
+        UserParam6.setValue( 0,false);           // zur freien Verwendung
+        UserParam7.setValue( 0,false);             // zur freien Verwendung
+        UserParam8.setValue( 0,false);             // zur freien Verwendung
+
+        ServoNickControl.setValue( 128,false);     // Wert : 0-247     // Stellung des Servos
+        ServoNickComp.setValue( 50,false);         // Wert : 0-247     // Einfluss Gyro/Servo
+        ServoCompInvert.setValue( 2,false);        // Wert : 0-247     // Richtung Einfluss Gyro/Servo
+        ServoNickMin.setValue( 15,false);          // Wert : 0-247     // Anschlag
+        ServoNickMax.setValue( 230,false);         // Wert : 0-247     // Anschlag
+        ServoNickRefresh.setValue( 4,false);
+        Servo3.setValue( 125,false);
+        Servo4.setValue( 125,false);
+        Servo5.setValue( 125,false);
+        ServoRollControl.setValue( 128,false);     // Wert : 0-247     // Stellung des Servos
+        ServoRollComp.setValue( 85,false);         // Wert : 0-247     // Einfluss Gyro/Servo
+        ServoRollMin.setValue( 70,false);          // Wert : 0-247     // Anschlag
+        ServoRollMax.setValue( 220,false);         // Wert : 0-247     // Anschlag
+        ServoManualControlSpeed.setValue( 60,false);
+        CamOrientation.setValue( 0,false);         // Wert : 0-24 -> 0-360 -> 15∞ steps
+
+        J16Bitmask.setValue( 95,false);
+        J17Bitmask.setValue( 243,false);
+        WARN_J16_Bitmask.setValue( 0xAA,false);
+        WARN_J17_Bitmask.setValue( 0xAA,false);
+        J16Timing.setValue( 20,false);
+        J17Timing.setValue( 20,false);
+
+        LoopGasLimit.setValue( 50,false);
+        LoopThreshold.setValue( 90,false);         // Wert: 0-247  Schwelle f¸r Stickausschlag
+        LoopHysterese.setValue( 50,false);
+        BitConfig.setValue( 0,false);              // Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
+
+        NaviGpsModeControl.setValue( 254,false); // 254 -> Poti 2
+        NaviGpsGain.setValue( 100,false);
+        NaviGpsP.setValue( 90,false);
+        NaviGpsI.setValue( 90,false);
+        NaviGpsD.setValue( 90,false);
+        NaviGpsPLimit.setValue( 75,false);
+        NaviGpsILimit.setValue( 85,false);
+        NaviGpsDLimit.setValue( 75,false);
+        NaviGpsACC.setValue( 0,false);
+        NaviGpsMinSat.setValue( 6,false);
+        NaviStickThreshold.setValue( 8,false);
+        NaviWindCorrection.setValue( 90,false);
+        NaviAccCompensation.setValue( 42,false);
+        NaviOperatingRadius.setValue( 245,false);
+        NaviAngleLimitation.setValue( 140,false);
+        NaviPH_LoginTime.setValue( 5,false);
+        OrientationAngle.setValue( 0,false);
+        CareFreeModeControl.setValue( 0,false);
+        UnterspannungsWarnung.setValue( 33,false); // Wert : 0-247 ( Automatische Zellenerkennung bei < 50)
+        NotGas.setValue( 45,false);                // Wert : 0-247     // Gaswert bei Empangsverlust
+        NotGasZeit.setValue( 90,false);            // Wert : 0-247     // Zeit bis auf NotGas geschaltet wird, wg. Rx-Problemen
+        MotorSmooth.setValue( 0,false);
+        ComingHomeAltitude.setValue( 0,false); 	  // 0.value = don't change 
+        FailSafeTime.setValue( 0,false); 	          // 0.value = off
+        MaxAltitude.setValue( 150,false);           // 0.value = off
+        AchsKopplung1.setValue( 90,false);
+        AchsKopplung2.setValue( 55,false);
+    }
+    /*
+    void ParamSet_DefaultSet1(void) // sport
+    {
+    CommonDefaults();
+    Stick_P = 14;            // Wert : 1-20
+    Stick_D = 16;            // Wert : 0-20
+    StickGier_P = 12;             // Wert : 1-20
+    Gyro_P = 80;             // Wert : 0-247
+    Gyro_I = 150;            // Wert : 0-247
+    Gyro_Gier_P = 80;        // Wert : 0-247
+    Gyro_Gier_I = 150;       // Wert : 0-247
+    Gyro_Stability = 6; 	  // Wert : 1-8
+    I_Faktor = 32;
+    CouplingYawCorrection = 1;
+    GyroAccAbgleich = 16;        // 1/k;
+    DynamicStability = 100;
+    memcpy(Name, "Sport\0", 12);
+    crc = RAM_Checksum((uint8_t*)(&EE_Parameter), sizeof(EE_Parameter)-1);
+    }
+     */
+
+    /***************************************************/
+    /*    Default Values for parameter set 1           */
+    /***************************************************/
+    private void ParamSet_DefaultSet1() // normal
+    {
+        CommonDefaults();
+        Stick_P.setValue( 10,false);               // Wert : 1-20
+        Stick_D.setValue( 16,false);               // Wert : 0-20
+        StickGier_P.setValue( 6,false);                 // Wert : 1-20
+        Gyro_P.setValue( 90,false);                // Wert : 0-247
+        Gyro_I.setValue( 120,false);               // Wert : 0-247
+        Gyro_Gier_P.setValue( 90,false);           // Wert : 0-247
+        Gyro_Gier_I.setValue( 120,false);          // Wert : 0-247
+        Gyro_Stability.setValue( 6,false); 	  	  // Wert : 1-8
+        I_Faktor.setValue( 32,false);
+        CouplingYawCorrection.setValue( 60,false);
+        GyroAccAbgleich.setValue( 32,false);        // 1/k
+        DynamicStability.setValue( 75,false);
+        Name.setValue("Fast");
+    }
+
+    /***************************************************/
+    /*    Default Values for parameter set 2           */
+    /***************************************************/
+    private void ParamSet_DefaultSet2() // beginner
+    {
+        CommonDefaults();
+        Stick_P.setValue( 8,false);                // Wert : 1-20
+        Stick_D.setValue( 16,false);               // Wert : 0-20
+        StickGier_P.setValue( 6,false);                // Wert : 1-20
+        Gyro_P.setValue( 100,false);               // Wert : 0-247
+        Gyro_I.setValue( 120,false);               // Wert : 0-247
+        Gyro_Gier_P.setValue( 100,false);          // Wert : 0-247
+        Gyro_Gier_I.setValue( 120,false);          // Wert : 0-247
+        Gyro_Stability.setValue( 6,false); 	  	  // Wert : 1-8
+        I_Faktor.setValue( 16,false);
+        CouplingYawCorrection.setValue( 70,false);
+        GyroAccAbgleich.setValue( 32,false);        // 1/k
+        DynamicStability.setValue( 70,false);
+        Name.setValue("Normal");
+    }
+
+    /***************************************************/
+    /*    Default Values for parameter set 3           */
+    /***************************************************/
+    private void ParamSet_DefaultSet3() // beginner
+    {
+        CommonDefaults();
+        Stick_P.setValue( 6,false);                // Wert : 1-20
+        Stick_D.setValue( 10,false);               // Wert : 0-20
+        StickGier_P.setValue( 4,false);           // Wert : 1-20
+        Gyro_P.setValue( 100,false);               // Wert : 0-247
+        Gyro_I.setValue( 120,false);               // Wert : 0-247
+        Gyro_Gier_P.setValue( 100,false);          // Wert : 0-247
+        Gyro_Gier_I.setValue( 120,false);          // Wert : 0-247
+        Gyro_Stability.setValue( 6,false); 	      // Wert : 1-8
+        I_Faktor.setValue( 16,false);
+        CouplingYawCorrection.setValue( 70,false);
+        GyroAccAbgleich.setValue( 32,false);        // 1/k
+        DynamicStability.setValue( 70,false);
+        Name.setValue("Easy");
     }
 
     /**
@@ -151,7 +405,7 @@ public class paramset_t extends c_int {
         Hoehe_StickNeutralPoint = new u8(index + " Hoehe_StickNeutralPoint");// Wert : 0-250
         Stick_P = new u8(index + " Stick_P");                // Wert : 1-6
         Stick_D = new u8(index + " Stick_D");                // Wert : 0-64
-        Gier_P = new u8(index + " Gier_P");                 // Wert : 1-20
+        StickGier_P = new u8(index + " Gier_P");                 // Wert : 1-20
         Gas_Min = new u8(index + " Gas_Min");                // Wert : 0-32
         Gas_Max = new u8(index + " Gas_Max");                // Wert : 33-250
         GyroAccFaktor = new u8(index + " GyroAccFaktor");          // Wert : 1-64
@@ -223,7 +477,7 @@ public class paramset_t extends c_int {
         NaviGpsMinSat = new u8(index + " NaviGpsMinSat");
         NaviStickThreshold = new u8(index + " NaviStickThreshold");
         NaviWindCorrection = new u8(index + " NaviWindCorrection");
-        NaviSpeedCompensation = new u8(index + " NaviSpeedCompensation");
+        NaviAccCompensation = new u8(index + " NaviSpeedCompensation");
         NaviOperatingRadius = new u8(index + " NaviOperatingRadius");
         NaviAngleLimitation = new u8(index + " NaviAngleLimitation");
         NaviPH_LoginTime = new u8(index + " NaviPH_LoginTime");
@@ -231,16 +485,35 @@ public class paramset_t extends c_int {
         ExternalControl = new u8(index + " ExternalControl");         // for serial Control
         //---CareFree---------------------------------------------
         OrientationAngle = new u8(index + " OrientationAngle");        // Where is the front-direction?
-        OrientationModeControl = new u8(index + " OrientationModeControl");  // switch for CareFree
+        CareFreeModeControl = new u8(index + " OrientationModeControl");  // switch for CareFree
         MotorSafetySwitch = new u8(index + "MotorSafetySwitch");
+        MotorSmooth = new u8(index + "MotorSmooth");
+        ComingHomeAltitude = new u8(index + "ComingHomeAltitude");
+        FailSafeTime = new u8(index + "FailSafeTime");
+        MaxAltitude = new u8(index + "MaxAltitude");
+
         //------------------------------------------------
-        BitConfig = new u8Flags(index + " BitConfig", new String[]{"UP", "DOWN", "LEFT", "RIGHT", "", "", "", ""});          // (war Loop-Cfg) Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
+        BitConfig = new u8Flags(index + " BitConfig", new String[]{"UP", "DOWN", "LEFT", "RIGHT", "MOTOR_BLINK1", "MOTOR_OFF_LED1", "MOTOR_OFF_LED2", "MOTOR_BLINK1"});          // (war Loop-Cfg) Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
         ServoCompInvert = new u8(index + " ServoCompInvert");    // //  0x01 = Nick, 0x02 = Roll   0 oder 1  // WICHTIG!!! am Ende lassen
-        ExtraConfig = new u8(index + " ExtraConfig");        // bitcodiert
+        ExtraConfig = new u8Flags(index + " ExtraConfig", new String[]{"HEIGHT_LIMIT", "VARIO_BEEP", "SENSITIVE_RC", "3_3V_REFERENCE", "NO_RCOFF_BEEPING", "GPS_AID", "LEARNABLE_CAREFREE", "IGNORE_MAG_ERR_AT_STARTUP"});        // bitcodiert
 
         Name = new c_string(index + " Name", 12, "Setting " + index);
         crc = new u8(index + " crc");
 
+                switch (index) {
+            case 1:
+                ParamSet_DefaultSet1(); // Fill ParamSet Structure to default parameter set 1 (Sport)
+                break;
+            case 2:
+                ParamSet_DefaultSet2(); // Kamera
+                break;
+            case 3:
+                ParamSet_DefaultSet3(); // Beginner
+                break;
+            default:
+                ParamSet_DefaultSet3(); // Beginner
+                break;
+        }
 
         allAttribs = new LinkedList<c_int>();
         allAttribs.add(Revision);
@@ -264,7 +537,7 @@ public class paramset_t extends c_int {
         allAttribs.add(Hoehe_StickNeutralPoint);//
         allAttribs.add(Stick_P);
         allAttribs.add(Stick_D);
-        allAttribs.add(Gier_P);
+        allAttribs.add(StickGier_P);
         allAttribs.add(Gas_Min);
         allAttribs.add(Gas_Max);
         allAttribs.add(GyroAccFaktor);
@@ -332,7 +605,7 @@ public class paramset_t extends c_int {
         allAttribs.add(NaviGpsMinSat);
         allAttribs.add(NaviStickThreshold);
         allAttribs.add(NaviWindCorrection);
-        allAttribs.add(NaviSpeedCompensation);
+        allAttribs.add(NaviAccCompensation);
         allAttribs.add(NaviOperatingRadius);
         allAttribs.add(NaviAngleLimitation);
         allAttribs.add(NaviPH_LoginTime);
@@ -340,8 +613,12 @@ public class paramset_t extends c_int {
         allAttribs.add(ExternalControl);
 
         allAttribs.add(OrientationAngle);
-        allAttribs.add(OrientationModeControl);
+        allAttribs.add(CareFreeModeControl);
         allAttribs.add(MotorSafetySwitch);
+        allAttribs.add(MotorSmooth);
+        allAttribs.add(ComingHomeAltitude);
+        allAttribs.add(FailSafeTime);
+        allAttribs.add(MaxAltitude);
 
         allAttribs.add(BitConfig);
         allAttribs.add(ServoCompInvert);
@@ -354,6 +631,7 @@ public class paramset_t extends c_int {
         allAttribs.add(Name);
         allAttribs.add(crc);
 
+
+
     }
 }
-
