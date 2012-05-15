@@ -17,7 +17,12 @@ import java.util.LinkedList;
  */
 public class paramset_t extends c_int {
 
-    int EEPARAM_REVISION = 88;
+    int EEPARAM_REVISION = 90;
+    //GlobalConfig3
+    int CFG3_NO_SDCARD_NO_START = 0x01;
+    int CFG3_DPH_MAX_RADIUS = 0x02;
+    int CFG3_VARIO_FAILSAFE = 0x04;
+
     //GlobalConfig
     int CFG_HOEHENREGELUNG = 0x01;
     int CFG_HOEHEN_SCHALTER = 0x02;
@@ -62,6 +67,8 @@ public class paramset_t extends c_int {
     int RECEIVER_JETI = 4;
     int RECEIVER_ACT_DSL = 5;
     int RECEIVER_HOTT = 6;
+    int RECEIVER_SBUS = 7;
+    int RECEIVER_USER = 8;
     int RECEIVER_UNKNOWN = 0xFF;
     u8 Revision;
     u8 Kanalbelegung[];// GAS[0], GIER[1],NICK[2], ROLL[3], POTI1, POTI2, POTI3
@@ -163,10 +170,14 @@ public class paramset_t extends c_int {
     u8 ComingHomeAltitude;
     u8 FailSafeTime;
     u8 MaxAltitude;
+    u8 FailsafeChannel;
+    u8 ServoFilterNick;
+    u8 ServoFilterRoll;
     //------------------------------------------------
     u8Flags BitConfig;// (war Loop-Cfg) Bitcodiert: 0x01;/ wird getrennt behandelt
     u8 ServoCompInvert;// //  0x01 ;// WICHTIG!!! am Ende lassen
     u8 ExtraConfig;// bitcodiert
+    u8Flags GlobalConfig3;
     //u8 Name[] ;
     c_string Name;
     u8 crc;			  // must be the last byte!
@@ -491,11 +502,15 @@ public class paramset_t extends c_int {
         ComingHomeAltitude = new u8(index + "ComingHomeAltitude");
         FailSafeTime = new u8(index + "FailSafeTime");
         MaxAltitude = new u8(index + "MaxAltitude");
+        FailsafeChannel = new u8(index + "FailsafeChannel");
+        ServoFilterNick = new u8(index + "ServoFilterNick");
+        ServoFilterRoll = new u8(index + "ServoFilterRoll");
 
         //------------------------------------------------
         BitConfig = new u8Flags(index + " BitConfig", new String[]{"UP", "DOWN", "LEFT", "RIGHT", "MOTOR_BLINK1", "MOTOR_OFF_LED1", "MOTOR_OFF_LED2", "MOTOR_BLINK1"});          // (war Loop-Cfg) Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
         ServoCompInvert = new u8(index + " ServoCompInvert");    // //  0x01 = Nick, 0x02 = Roll   0 oder 1  // WICHTIG!!! am Ende lassen
         ExtraConfig = new u8Flags(index + " ExtraConfig", new String[]{"HEIGHT_LIMIT", "VARIO_BEEP", "SENSITIVE_RC", "3_3V_REFERENCE", "NO_RCOFF_BEEPING", "GPS_AID", "LEARNABLE_CAREFREE", "IGNORE_MAG_ERR_AT_STARTUP"});        // bitcodiert
+        GlobalConfig3 = new u8Flags(index + " GlobalConfig3", new String[]{"NO_SDCARD_NO_START", "DPH_MAX_RADIUS", "", "", "", "", "", ""});        // bitcodiert
 
         Name = new c_string(index + " Name", 12, "Setting " + index);
         crc = new u8(index + " crc");
@@ -619,10 +634,14 @@ public class paramset_t extends c_int {
         allAttribs.add(ComingHomeAltitude);
         allAttribs.add(FailSafeTime);
         allAttribs.add(MaxAltitude);
+        allAttribs.add(FailsafeChannel);
+        allAttribs.add(ServoFilterNick);
+        allAttribs.add(ServoFilterRoll);
 
         allAttribs.add(BitConfig);
         allAttribs.add(ServoCompInvert);
         allAttribs.add(ExtraConfig);
+        allAttribs.add(GlobalConfig3);
         /*for (int i = 0; i < Name.length; i++) {
         u8 c = new u8("Name " + i);
         Name[i] = c;

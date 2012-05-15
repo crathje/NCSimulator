@@ -11,6 +11,7 @@ package de.mylifesucks.oss.ncsimulator.datastorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.Data3D_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.Motor_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.NaviData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.PPMArray;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
@@ -65,8 +66,8 @@ public class DataStorage {
     public static str_DebugOut NCDebugOut = new str_DebugOut("NC", CommunicationBase.NC_ADDRESS);
     public static str_DebugOut MK3MAGDebugOut = new str_DebugOut("MK3MAG", CommunicationBase.MK3MAG_ADDRESS);
     public static paramset_t paramset[] = new paramset_t[5];
-    public static int activeParamset=3;
-    public static ArrayList<Waypoint_t> waypointList = new ArrayList<Waypoint_t>();
+    public static int activeParamset = 3;
+    public static Waypoint_t waypointList[] = new Waypoint_t[100];
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
@@ -84,6 +85,8 @@ public class DataStorage {
     public static LinkedList<DataWindow> dataWindows = new LinkedList<DataWindow>();
     public static final String nodeName = "NC Simulator";
     public static DataWindowPanel dataWindowPanel;
+    public static Motor_t motors[] = new Motor_t[8];
+    public static int motorCounter = 0;
 
     private DataStorage() {
         iconHome = new ImageIcon(getClass().getResource("/de/mylifesucks/oss/ncsimulator/img/home.png"));
@@ -101,14 +104,26 @@ public class DataStorage {
             }
         }
 
-        if (waypointList == null) {
-            waypointList = new ArrayList<Waypoint_t>();
+        if (motors == null || motors[0] == null) {
+            motors = new Motor_t[5];
+            for (int i = 0; i < motors.length; i++) {
+                motors[i] = new Motor_t(i + 1);
+            }
+        }
+
+        if (waypointList == null || waypointList[0] == null) {
+            waypointList = new Waypoint_t[100];
+            for (int i = 0; i < waypointList.length; i++) {
+                waypointList[i] = getEmptyWP(i + 1);
+            }
         }
 
     }
 
     public static void clearWP() {
-        waypointList.clear();
+        for (int i = 0; i < motors.length; i++) {
+            motors[i] = new Motor_t(i + 1);
+        }
     }
 
     public static Waypoint_t getEmptyWP(int index) {
@@ -123,24 +138,20 @@ public class DataStorage {
         wp.Type.value = Waypoint_t.POINT_TYPE_INVALID;
         wp.Event_Flag.value = 0;		// future implementation
         wp.AltitudeRate.value = 0;		// no change of setpoint
-
+        wp.Speed.value = 30;		// no change of setpoint
+        wp.CameraAngle.value = 0;		// no change of setpoint
         wp.Index.value = index + 1;
         return wp;
     }
 
     public static void addWP(Waypoint_t wp) {
 
-        int wpIndex= (int)wp.Index.value-1;
+        int wpIndex = (int) wp.Index.value - 1;
 
         System.out.println("Add WP " + wp.Index.value);
         wp.printOut();
 
-        while(waypointList.size()<wpIndex){
-            System.out.println("Add WP " + waypointList.size());
-            waypointList.add(getEmptyWP(waypointList.size()));
-        }
-
-        waypointList.add(wp);
+        waypointList[wpIndex] = wp;
     }
 
     public static synchronized DataStorage getInstance() {

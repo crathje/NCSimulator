@@ -49,6 +49,9 @@ public class SendThread extends Thread {
                         if (DataStorage.naviData.requestTime > 0 && System.currentTimeMillis() + sleeptime > osdLasttime + DataStorage.naviData.requestTime) {
                             osdLasttime = System.currentTimeMillis();
                             DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
+                            int idx = DataStorage.motorCounter++;
+                            idx = idx % DataStorage.motors.length;
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.motors[idx].getAsInt());
                             //System.out.println("OSD autosend");
                         }
                         if (DataStorage.NCDebugOut.requestTime > 0 && System.currentTimeMillis() + sleeptime > NCdebugLasttime + DataStorage.NCDebugOut.requestTime) {
@@ -88,4 +91,3 @@ public class SendThread extends Thread {
 
     }
 }
-

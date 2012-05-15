@@ -243,12 +243,8 @@ public class CommunicationBase {
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Append Waypoint to List");
 //                                    System.out.println(out);
 
-                                    Waypoint_t rec1 = new Waypoint_t("recieved WP");
-                                    rec1.loadFromInt(RxdBuffer, pRxData);
-
-                                    Waypoint_t rec = new Waypoint_t("WP" + rec1.Index.value);
+                                    Waypoint_t rec = new Waypoint_t("recieved WP");
                                     rec.loadFromInt(RxdBuffer, pRxData);
-
 
 
                                     System.out.println("recieved WP " + rec.Index.value);
@@ -259,7 +255,8 @@ public class CommunicationBase {
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     } else {
                                             System.out.println("Set WP " + rec.Index.value);
-                                            DataStorage.addWP(rec);
+                                            
+                                            DataStorage.waypointList[(int)(rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     }
 //                                    rec.printOut();
@@ -268,10 +265,10 @@ public class CommunicationBase {
                                     System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
                                     int index = RxdBuffer[pRxData];
                                     System.out.println("Read index " + index);
-                                    if (index <= DataStorage.waypointList.size()) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.size(), index}, DataStorage.waypointList.get(index - 1).getAsInt()));
+                                    if (index <= DataStorage.waypointList.length) {
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.length, index}, DataStorage.waypointList[index - 1].getAsInt()));
                                     } else {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.size()});
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.length});
                                     }
                                     break;
                                 case 'j':// Set/Get NC-Parameter

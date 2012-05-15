@@ -20,7 +20,7 @@ import java.util.Observer;
 public class NaviData_t extends c_int implements Observer{
 
     public static final String[] FC_FLAGS = {"MOTOR_RUN", "FLY", "CALIBRATE", "START", "NOTLANDUNG", "LOWBAT", "SPI_RX_ERR", "I2CERR"};
-    public static final String[] FC_FLAGS2 = {"CAREFREE", "ALTITUDE_CONTROL"};
+    public static final String[] FC_FLAGS2 = {"CAREFREE", "ALTITUDE_CONTROL","RC_FAILSAVE_ACTIVE","OUT1_ACTIVE","OUT2_ACTIVE"};
     public static final String[] NC_FLAGS = {"FREE", "PH", "CH", "RANGE_LIMIT", "NOSERIALLINK", "TARGET_REACHED", "MANUAL_CONTROL", "GPS_OK "};
     public static final String[] ERROR_CODE = {"FC !COMPAT", "NO FC COMM", "NO MK3MAG COMM"};
     public u8 Version = new u8("Version"); // version of the data structure

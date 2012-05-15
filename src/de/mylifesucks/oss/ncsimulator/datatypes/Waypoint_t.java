@@ -27,6 +27,8 @@ public class Waypoint_t extends c_int {
     public u8 Type;                               // typeof Waypoint
     public u8 WP_EventChannelValue;  //
     public u8 AltitudeRate;
+    public u8 Speed;
+    public u8 CameraAngle;
     public u8 reserve[];             // reserve
     public static final int INVALID = 0x00;
     public static final int NEWDATA = 0x01;
@@ -47,8 +49,10 @@ public class Waypoint_t extends c_int {
         Index = new u8(prefix + " Index");
         Type = new u8(prefix + " Type");
         WP_EventChannelValue = new u8(prefix + " WP_EventChannelValue");
-        AltitudeRate= new u8(prefix + " AltitudeRate");
-        reserve = new u8[8];
+        AltitudeRate = new u8(prefix + " AltitudeRate");
+        Speed = new u8(prefix + " Speed");
+        CameraAngle = new u8(prefix + " CameraAngle");
+        reserve = new u8[6];
         for (int i = 0; i < reserve.length; i++) {
             reserve[i] = new u8(prefix + "" + i);
         }
@@ -61,7 +65,8 @@ public class Waypoint_t extends c_int {
         allAttribs.add(Type);
         allAttribs.add(WP_EventChannelValue);
         allAttribs.add(AltitudeRate);
+        allAttribs.add(Speed);
+        allAttribs.add(CameraAngle);
         allAttribs.addAll(Arrays.asList(reserve));
     }
-
 }
