@@ -8,6 +8,7 @@
  */
 package de.mylifesucks.oss.ncsimulator.datastorage;
 
+import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Data3D_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
@@ -67,6 +68,7 @@ public class DataStorage {
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
     public static Data3D_t data3d_t = new Data3D_t();
+    public static BLData_t bldata_t[] = new BLData_t[12];
     public static Preferences preferences;
     public static Encode encoder;
     public static CommunicationBase serial;
@@ -94,6 +96,12 @@ public class DataStorage {
             paramset = new paramset_t[5];
             for (int i = 0; i < paramset.length; i++) {
                 paramset[i] = new paramset_t(i + 1);
+            }
+        }
+        if (bldata_t == null || bldata_t[0] == null) {
+            bldata_t = new BLData_t[12];
+            for (int i = 0; i < bldata_t.length; i++) {
+                bldata_t[i] = new BLData_t(i);
             }
         }
 

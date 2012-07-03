@@ -9,6 +9,7 @@
 package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -304,6 +305,24 @@ public class MainPanel extends JPanel {
         tabbed.addTab("NC OSD Values", osdScrollpane);
 
 
+        JPanel blPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints oblgbc = new GridBagConstraints();
+        oblgbc.gridy++;
+        for (BLData_t bld : DataStorage.bldata_t) {
+            oblgbc.gridy++;
+            oblgbc.gridx = 0;
+            oblgbc.gridwidth = GridBagConstraints.REMAINDER;
+            blPanel.add(new JLabel("BLCtrl #"+bld.Index.value), oblgbc);
+            oblgbc.gridy++;
+            oblgbc.gridwidth = 1;
+            bld.addToPanel(blPanel, oblgbc);
+            
+        }
+        JScrollPane blScrollpane = new JScrollPane(blPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("BLCtrl", blScrollpane);
+
+        
+        
 
         JPanel debugFCValPanel = new JPanel(new GridBagLayout());
         GridBagConstraints debuggcgbc = new GridBagConstraints();

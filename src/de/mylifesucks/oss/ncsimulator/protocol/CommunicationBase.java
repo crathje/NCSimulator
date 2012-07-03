@@ -9,6 +9,7 @@
 package de.mylifesucks.oss.ncsimulator.protocol;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
@@ -74,7 +75,7 @@ public class CommunicationBase {
                 LcdClear();
                 wdt_enable(WDTO_250MS); // Reset-Commando
                 ServoActive = 0;
-
+                
                 }*/
 
                 final int RxdBuffer_work[] = new int[MAX_EMPFANGS_BUFF];
@@ -276,7 +277,7 @@ public class CommunicationBase {
                                     DataStorage.coordVizualizer.update();
                                     break;
                                 default:
-//                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " unsupported command recieved");
+                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " unsupported command recieved");
                                     // unsupported command recieved
                                     break;
                             }
@@ -308,8 +309,19 @@ public class CommunicationBase {
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
                                     }
                                     break;
+                                case 'k':// BL Ctrl Status
+                                    int blNum = RxdBuffer[pRxData + 1];
+                                     if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                         for (BLData_t bld : DataStorage.bldata_t) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', bld.getAsInt());
+                                         }
+                                    }
+                                  //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
+                                    break;
                                 case 'l':// reqest for display columns
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " reqest for display columns");
+                                    DataStorage.encoder.send_command(NC_ADDRESS, 'L', DataStorage.lcddata.getAsInt());
+
                                     break;
                                 case 'o': // request for navigation information
                                     if ((DataStorage.naviData.requestTime = RxdBuffer[pRxData] * 10) > 0) {

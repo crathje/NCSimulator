@@ -8,6 +8,7 @@
 package de.mylifesucks.oss.ncsimulator.protocol;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 
 /**
  *
@@ -21,6 +22,7 @@ public class SendThread extends Thread {
     long sleeptime = 50;
     long reqestosdlasttime = lasttime;
     long reqestdebuglasttime = lasttime;
+    long blctrllasttime = lasttime;
 
     public SendThread(String name) {
         super(name);
@@ -66,6 +68,14 @@ public class SendThread extends Thread {
                             DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
                             //System.out.println("LCD autosend");
                         }
+                        if (DataStorage.bldata_t[0].requestTime > 0 && System.currentTimeMillis() + sleeptime > blctrllasttime + DataStorage.bldata_t[0].requestTime) {
+                            blctrllasttime = System.currentTimeMillis();
+                            for (BLData_t bld : DataStorage.bldata_t) {
+                                DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', bld.getAsInt());
+                            }
+                            // DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t.getAsInt());
+                            //System.out.println("LCD autosend");
+                        }
                         break;
                     case FC:
                         if (DataStorage.FCDebugOut.requestTime > 0 && System.currentTimeMillis() + sleeptime > FCdebugLasttime + DataStorage.FCDebugOut.requestTime) {
@@ -88,4 +98,3 @@ public class SendThread extends Thread {
 
     }
 }
-
