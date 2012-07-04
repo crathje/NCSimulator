@@ -17,22 +17,28 @@ import java.util.LinkedList;
  */
 public class BLData_t extends c_int {
 
-    public u8 Index = new u8("Index");
-    public u8 Current = new u8("Current");
-    public u8 Temperature = new u8("Temperature");
-    public u8 MaxPWM = new u8("MaxPWM");
-    public u8Flags Status = new u8Flags("Status", new String[]{"?", "?", "?", "?", "?", "?", "?", "?"});
+    public u8 Index;
+    public u8 Current;
+    public u8 Temperature;
+    public u8 MaxPWM;
+    public u8Flags Status;
 
     public BLData_t(int index) {
 
+        Index = new u8(index + "Index");
+        Current = new u8(index + "Current");
+        Temperature = new u8(index + "Temperature");
+        MaxPWM = new u8(index + "MaxPWM");
+        Status = new u8Flags(index + "Status", new String[]{"?", "?", "?", "?", "?", "?", "?", "?"});
+
         Index.setValue(index, false);
         Status.setValue(128, false); // enable report?
-        
+
         allAttribs = new LinkedList<c_int>();
         allAttribs.add(Index);
         allAttribs.add(Current);
         allAttribs.add(Temperature);
-        allAttribs.add(MaxPWM);        
+        allAttribs.add(MaxPWM);
         allAttribs.add(Status);
 
 //
