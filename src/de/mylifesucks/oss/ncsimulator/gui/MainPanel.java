@@ -10,6 +10,7 @@ package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.Motor_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
@@ -310,6 +311,21 @@ public class MainPanel extends JPanel {
         tabbed.addTab("NC OSD Values", osdScrollpane);
 
 
+        JPanel blPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints oblgbc = new GridBagConstraints();
+        oblgbc.gridy++;
+        for (BLData_t bld : DataStorage.bldata_t) {
+            oblgbc.gridy++;
+            oblgbc.gridx = 0;
+            oblgbc.gridwidth = GridBagConstraints.REMAINDER;
+            blPanel.add(new JLabel("BLCtrl #"+bld.Index.value), oblgbc);
+            oblgbc.gridy++;
+            oblgbc.gridwidth = 1;
+            bld.addToPanel(blPanel, oblgbc);
+            
+        }
+        JScrollPane blScrollpane = new JScrollPane(blPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("BLCtrl", blScrollpane);
 
 //        motorgcgbc.gridy++;
 //        motor.addToPanel(motorPanel, motorgcgbc);
