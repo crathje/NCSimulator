@@ -7,6 +7,11 @@
  *
  */
 
+20120710-1930
+        *added BL-Ctrl data
+        *fixed Version-Info-String-Data
+        *merged with fblumenberg
+        
 20110331-1700
         *small fix in datawindow transparency and bg-color savings
         *small fix for observering combined structs

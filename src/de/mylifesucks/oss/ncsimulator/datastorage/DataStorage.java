@@ -12,7 +12,6 @@ import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Data3D_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
-import de.mylifesucks.oss.ncsimulator.datatypes.Motor_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.NaviData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.PPMArray;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
@@ -87,7 +86,6 @@ public class DataStorage {
     public static LinkedList<DataWindow> dataWindows = new LinkedList<DataWindow>();
     public static final String nodeName = "NC Simulator";
     public static DataWindowPanel dataWindowPanel;
-    public static Motor_t motors[] = new Motor_t[8];
     public static int motorCounter = 0;
 
     private DataStorage() {
@@ -112,12 +110,6 @@ public class DataStorage {
             }
         }
 
-        if (motors == null || motors[0] == null) {
-            motors = new Motor_t[5];
-            for (int i = 0; i < motors.length; i++) {
-                motors[i] = new Motor_t(i + 1);
-            }
-        }
 
         if (waypointList == null || waypointList[0] == null) {
             waypointList = new Waypoint_t[100];
@@ -129,8 +121,8 @@ public class DataStorage {
     }
 
     public static void clearWP() {
-        for (int i = 0; i < motors.length; i++) {
-            motors[i] = new Motor_t(i + 1);
+        for (int i = 0; i < bldata_t.length; i++) {
+             bldata_t[i] = new BLData_t(i);
         }
     }
 

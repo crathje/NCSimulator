@@ -315,10 +315,11 @@ public class CommunicationBase {
                                     break;
                                 case 'k':// BL Ctrl Status
                                     int blNum = RxdBuffer[pRxData + 1];
-                                     if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                         for (BLData_t bld : DataStorage.bldata_t) {
-                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', bld.getAsInt());
-                                         }
+                                    blNum = blNum % DataStorage.bldata_t.length;
+                                     if ((DataStorage.bldata_t[blNum].requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                      //   for (BLData_t bld : DataStorage.bldata_t) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
+                                      //   }
                                     }
                                   //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
                                     break;

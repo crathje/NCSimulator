@@ -9,7 +9,6 @@
 package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
-import de.mylifesucks.oss.ncsimulator.datatypes.Motor_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
@@ -330,7 +329,7 @@ public class MainPanel extends JPanel {
 //        motorgcgbc.gridy++;
 //        motor.addToPanel(motorPanel, motorgcgbc);
 
-        JPanel listPane = new JPanel();
+      /*  JPanel listPane = new JPanel();
         listPane.setLayout(new BoxLayout(listPane, BoxLayout.PAGE_AXIS));
         listPane.add(new JLabel("Label1"));
         listPane.add(new JLabel("Label1"));
@@ -352,7 +351,7 @@ public class MainPanel extends JPanel {
         listPane.add(new JLabel("Label1"));
 
         JScrollPane motorFCScrollpane = new JScrollPane(listPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("MotorData", motorFCScrollpane);
+        tabbed.addTab("MotorData", motorFCScrollpane);*/
 
         DataStorage.clearWP();
         

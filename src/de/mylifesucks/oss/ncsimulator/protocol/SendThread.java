@@ -51,9 +51,9 @@ public class SendThread extends Thread {
                         if (DataStorage.naviData.requestTime > 0 && System.currentTimeMillis() + sleeptime > osdLasttime + DataStorage.naviData.requestTime) {
                             osdLasttime = System.currentTimeMillis();
                             DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
-                            int idx = DataStorage.motorCounter++;
-                            idx = idx % DataStorage.motors.length;
-                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.motors[idx].getAsInt());
+                            //int idx = DataStorage.motorCounter++;
+                            //idx = idx % DataStorage.bldata_t.length;
+                            //DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t[idx].getAsInt());
                             //System.out.println("OSD autosend");
                         }
                         if (DataStorage.NCDebugOut.requestTime > 0 && System.currentTimeMillis() + sleeptime > NCdebugLasttime + DataStorage.NCDebugOut.requestTime) {
@@ -73,9 +73,12 @@ public class SendThread extends Thread {
                         }
                         if (DataStorage.bldata_t[0].requestTime > 0 && System.currentTimeMillis() + sleeptime > blctrllasttime + DataStorage.bldata_t[0].requestTime) {
                             blctrllasttime = System.currentTimeMillis();
-                            for (BLData_t bld : DataStorage.bldata_t) {
-                                DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', bld.getAsInt());
-                            }
+                            //for (BLData_t bld : DataStorage.bldata_t) {
+
+                            int idx = DataStorage.motorCounter++;
+                            idx = idx % DataStorage.bldata_t.length;
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t[idx].getAsInt());
+                            //}
                             // DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t.getAsInt());
                             //System.out.println("LCD autosend");
                         }
