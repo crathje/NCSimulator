@@ -7,6 +7,8 @@
  */
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -15,7 +17,6 @@ import java.util.LinkedList;
  * @author Claas Anders "CaScAdE" Rathje
  */
 public class Waypoint_t extends c_int {
-    public static LinkedList<Waypoint_t> waypointList = new LinkedList<Waypoint_t>();
 
     public GPS_Pos_t Position;             // the gps position of the waypoint, see ubx.h for details
     public s16 Heading;                    // orientation, future implementation
@@ -25,10 +26,16 @@ public class Waypoint_t extends c_int {
     public u8 Index;              // to indentify different waypoints, workaround for bad communications PC <-> NC
     public u8 Type;                               // typeof Waypoint
     public u8 WP_EventChannelValue;  //
+    public u8 AltitudeRate;
+    public u8 Speed;
+    public u8 CameraAngle;
     public u8 reserve[];             // reserve
     public static final int INVALID = 0x00;
     public static final int NEWDATA = 0x01;
     public static final int PROCESSED = 0x02;
+    public static final int POINT_TYPE_INVALID = 255;
+    public static final int POINT_TYPE_WP = 0;
+    public static final int POINT_TYPE_POI = 1;
 
     public Waypoint_t(String prefix) {
         super();
@@ -42,7 +49,10 @@ public class Waypoint_t extends c_int {
         Index = new u8(prefix + " Index");
         Type = new u8(prefix + " Type");
         WP_EventChannelValue = new u8(prefix + " WP_EventChannelValue");
-        reserve = new u8[9];
+        AltitudeRate = new u8(prefix + " AltitudeRate");
+        Speed = new u8(prefix + " Speed");
+        CameraAngle = new u8(prefix + " CameraAngle");
+        reserve = new u8[6];
         for (int i = 0; i < reserve.length; i++) {
             reserve[i] = new u8(prefix + "" + i);
         }
@@ -54,15 +64,9 @@ public class Waypoint_t extends c_int {
         allAttribs.add(Index);
         allAttribs.add(Type);
         allAttribs.add(WP_EventChannelValue);
-        for (int i = 0; i < reserve.length; i++) {
-            allAttribs.add(reserve[i]);
-        }
-    }
-
-    public static void clearWP() {
-        waypointList.clear();
-    }
-    public static void addWP(Waypoint_t wp) {
-        waypointList.add(wp);
+        allAttribs.add(AltitudeRate);
+        allAttribs.add(Speed);
+        allAttribs.add(CameraAngle);
+        allAttribs.addAll(Arrays.asList(reserve));
     }
 }

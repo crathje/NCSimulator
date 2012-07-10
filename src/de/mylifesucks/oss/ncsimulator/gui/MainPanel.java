@@ -9,8 +9,13 @@
 package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.datatypes.Motor_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
+import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
+import de.mylifesucks.oss.ncsimulator.datatypes.u16;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +27,7 @@ import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
 import de.mylifesucks.oss.ncsimulator.protocol.TcpComm;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -84,7 +90,7 @@ public class MainPanel extends JPanel {
 
         Box center = Box.createHorizontalBox();
         center.add(Box.createHorizontalGlue());
-        
+
         ports = new JComboBox(SerialComm.getPorts().keySet().toArray());
         center.add(ports);
 
@@ -171,7 +177,7 @@ public class MainPanel extends JPanel {
         timeSlider.setMajorTickSpacing(100);
         timeSlider.setMinorTickSpacing(10);
         timeSlider.addChangeListener(new ChangeListener() {
-
+        
         public void stateChanged(ChangeEvent e) {
         if (e.getSource() == timeSlider) {
         sleeptime = timeSlider.getValue();
@@ -321,8 +327,103 @@ public class MainPanel extends JPanel {
         JScrollPane blScrollpane = new JScrollPane(blPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("BLCtrl", blScrollpane);
 
+//        motorgcgbc.gridy++;
+//        motor.addToPanel(motorPanel, motorgcgbc);
+
+        JPanel listPane = new JPanel();
+        listPane.setLayout(new BoxLayout(listPane, BoxLayout.PAGE_AXIS));
+        listPane.add(new JLabel("Label1"));
+        listPane.add(new JLabel("Label1"));
+
+        for (int i = 0; i < DataStorage.motors.length; i++) {
+            Motor_t motor = new Motor_t(i);
+
+            DataStorage.motors[i] = motor;
+
+            JPanel motorPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints motorgcgbc = new GridBagConstraints();
+            motorgcgbc.gridy++;
+            motor.addToPanel(motorPanel, motorgcgbc);
+            listPane.add(motorPanel);
+
+            listPane.add(new JLabel("Label1"));
+        }
+        listPane.add(new JLabel("Label1"));
+        listPane.add(new JLabel("Label1"));
+
+        JScrollPane motorFCScrollpane = new JScrollPane(listPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("MotorData", motorFCScrollpane);
+
+        DataStorage.clearWP();
         
+        JPanel wpListPane = new JPanel();
+        wpListPane.setLayout(new BoxLayout(wpListPane, BoxLayout.PAGE_AXIS));
+        wpListPane.add(new JLabel("Label1"));
+        wpListPane.add(new JLabel("Label1"));
+        for (int i = 0; i < 10; i++) {
+            
+            Waypoint_t wp = DataStorage.waypointList[i];
+            
+            JPanel motorPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints motorgcgbc = new GridBagConstraints();
+            motorgcgbc.gridy++;
+            wp.addToPanel(motorPanel, motorgcgbc);
+            wpListPane.add(motorPanel);
+            
+            wpListPane.add(new JLabel("Label1"));
+        }
+        wpListPane.add(new JLabel("Label1"));
+        wpListPane.add(new JLabel("Label1"));
+
+        JScrollPane waypointScrollpane = new JScrollPane(wpListPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("Waypoints", waypointScrollpane);
         
+//        JTabbedPane waipointsPanel = new JTabbedPane();
+//        waipointsPanel.setLayout(new BoxLayout(waipointsPanel, BoxLayout.PAGE_AXIS));
+//
+//        for (int i = 0; i < 12; i++) {
+//            JPanel setPanel = new JPanel();
+//            GridBagConstraints wpdgbc = new GridBagConstraints();
+//            wpdgbc.gridy++;
+//            
+//            JLabel label = new JLabel("Motor");
+//            setPanel.add(label);
+//            setPanel.setBackground(i%20==0?Color.yellow:Color.cyan);
+//
+////            Waypoint_t wp = DataStorage.waypointList.get(i);
+////            wp.addToPanel(setPanel, paramgbc);
+////
+////            JScrollPane paramScrPanel = new JScrollPane(setPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//
+//            
+//            waipointsPanel.add("Waypoint " + (i + 1), setPanel);
+//        }
+//        tabbed.addTab("Motor", waipointsPanel);
+//
+//
+//
+//        JPanel wpPanel = new JPanel(new GridBagLayout());
+//        GridBagConstraints wpdgbc = new GridBagConstraints();
+//        wpdgbc.gridy++;
+//        for (int i = 0; i < Waypoint_t.waypointList.length; i++) {
+//            wpPanel.add(new JLabel("Waypoint #" + i), wpdgbc);
+//            wpdgbc.gridy++;
+//
+//            JPanel wpePanel = new JPanel(new GridBagLayout());
+//            GridBagConstraints wpedgbc = new GridBagConstraints();
+//
+//            wpePanel.add(new JLabel("Data Waypoint #" + i), wpedgbc);
+//            wpedgbc.gridx=0;
+//            wpedgbc.gridy++;
+//            Waypoint_t.waypointList[i].addToPanel(wpePanel, wpedgbc);
+//
+//            wpPanel.add(wpePanel, wpdgbc);
+//            wpdgbc.gridy++;
+//        }
+//        //DataStorage.naviData.addToPanel(osdPanel, osdgbc);
+//        JScrollPane wpScrollpane = new JScrollPane(wpPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//        tabbed.addTab("Waipoints", wpScrollpane);
+
 
         JPanel debugFCValPanel = new JPanel(new GridBagLayout());
         GridBagConstraints debuggcgbc = new GridBagConstraints();
@@ -340,9 +441,6 @@ public class MainPanel extends JPanel {
 
 
         JTabbedPane paramPanel = new JTabbedPane();
-        //this.add(tabbed, BorderLayout.CENTER);
-
-
         for (int i = 0; i
                 < DataStorage.paramset.length; i++) {
             JPanel setPanel = new JPanel(new GridBagLayout());

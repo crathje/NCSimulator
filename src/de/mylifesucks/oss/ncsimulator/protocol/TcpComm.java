@@ -68,9 +68,9 @@ public class TcpComm extends CommunicationBase implements Runnable {
                 InputStream inputStream = clientSocket.getInputStream();
                 while (!clientSocket.isClosed()) {
                     int numBytes = inputStream.read(readBuffer);
-                    System.out.println("Read bytes from socket:" + numBytes);
-                    System.out.println("socket:" + clientSocket.isClosed());
-                    System.out.println("socket:" + clientSocket.isConnected());
+//                    System.out.println("Read bytes from socket:" + numBytes);
+//                    System.out.println("socket:" + clientSocket.isClosed());
+//                    System.out.println("socket:" + clientSocket.isConnected());
 
                     if(numBytes<0)
                         clientSocket.close();
@@ -80,7 +80,8 @@ public class TcpComm extends CommunicationBase implements Runnable {
                         out += (char) readBuffer[i];
                     }
 
-                    System.out.println("Read bytes from socket:" + out);
+                    if(!out.startsWith("#a") && !out.startsWith("#co") )
+                      System.out.println("Read bytes from socket:" + out);
 
                     int foo = 0;
                     //"0x1B,0x1B,0x55,0xAA,0x00"

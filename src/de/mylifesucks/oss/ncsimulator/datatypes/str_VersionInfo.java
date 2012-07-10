@@ -43,10 +43,11 @@ public class str_VersionInfo extends c_int {
         allAttribs.add(ProtoMajor);
         allAttribs.add(ProtoMinor);
         allAttribs.add(SWPatch);
+		
         for (u8 he : HardwareError) {
             allAttribs.add(he);
         }
-        
+
         for (c_int c : allAttribs) {
             DataStorage.addToSerializePool(c);
         }

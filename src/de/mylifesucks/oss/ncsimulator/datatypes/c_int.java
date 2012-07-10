@@ -365,4 +365,12 @@ public abstract class c_int extends Observable {
         }
         return str.toString();
     }
+
+    public void dump() {
+        System.out.println(this.name + ": " + this.value);
+        for (c_int c : allAttribs) {
+            c.dump();
+        }
+    }
+
 }

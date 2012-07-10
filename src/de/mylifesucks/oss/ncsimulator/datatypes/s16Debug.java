@@ -98,6 +98,14 @@ public class s16Debug extends s16 {
                                             }
                                         }
                                         break;
+                                    case CommunicationBase.MK3MAG_ADDRESS:
+                                        if (DataStorage.UART == DataStorage.UART_CONNECTION.MK3MAG) {
+                                            //System.out.println("FOcus LOST FC " + ADDRESS);
+                                            for (s16Debug foo : DataStorage.MK3MAGDebugOut.Analog) {
+                                                DataStorage.encoder.send_command(CommunicationBase.MK3MAG_ADDRESS, 'A', foo.getLabelArray());
+                                            }
+                                        }
+                                        break;
                                 }
 
                                 return true;
