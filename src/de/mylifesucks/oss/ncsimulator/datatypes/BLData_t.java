@@ -7,7 +7,6 @@
  */
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
-import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import java.util.LinkedList;
 
 /**

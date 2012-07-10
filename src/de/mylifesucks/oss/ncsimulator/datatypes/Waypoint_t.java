@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
- * 3D Data Struct
+ * Waypoint Data Struct
  * adapted from: http://svn.mikrokopter.de/filedetails.php?repname=NaviCtrl&path=/tags/V0.22a/waypoints.h
- * @author Claas Anders "CaScAdE" Rathje
+ * @author Frank Blumenberg
  */
 public class Waypoint_t extends c_int {
 
@@ -37,6 +37,8 @@ public class Waypoint_t extends c_int {
     public static final int POINT_TYPE_WP = 0;
     public static final int POINT_TYPE_POI = 1;
 
+//    public static Waypoint_t[] waypointList;
+    
     public Waypoint_t(String prefix) {
         super();
         name = prefix;

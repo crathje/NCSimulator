@@ -74,9 +74,9 @@ public class SendThread extends Thread {
                         if (DataStorage.bldata_t[0].requestTime > 0 && System.currentTimeMillis() + sleeptime > blctrllasttime + DataStorage.bldata_t[0].requestTime) {
                             blctrllasttime = System.currentTimeMillis();
                             //for (BLData_t bld : DataStorage.bldata_t) {
-
                             int idx = DataStorage.motorCounter++;
                             idx = idx % DataStorage.bldata_t.length;
+                            //System.out.println("BLDATA: " + blctrllasttime + " sending " + idx);
                             DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t[idx].getAsInt());
                             //}
                             // DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'K', DataStorage.bldata_t.getAsInt());

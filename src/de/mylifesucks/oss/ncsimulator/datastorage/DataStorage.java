@@ -121,9 +121,13 @@ public class DataStorage {
     }
 
     public static void clearWP() {
+        /*
+         * why clear bldata in clearWP???
         for (int i = 0; i < bldata_t.length; i++) {
-             bldata_t[i] = new BLData_t(i);
+            bldata_t[i] = new BLData_t(i);
         }
+         * 
+         */
     }
 
     public static Waypoint_t getEmptyWP(int index) {

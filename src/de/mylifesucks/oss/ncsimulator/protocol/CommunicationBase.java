@@ -255,10 +255,10 @@ public class CommunicationBase {
                                         DataStorage.clearWP();
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     } else {
-                                            System.out.println("Set WP " + rec.Index.value);
-                                            
-                                            DataStorage.waypointList[(int)(rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
-                                            DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
+                                        System.out.println("Set WP " + rec.Index.value);
+
+                                        DataStorage.waypointList[(int) (rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                     }
 //                                    rec.printOut();
                                     break;
@@ -316,12 +316,16 @@ public class CommunicationBase {
                                 case 'k':// BL Ctrl Status
                                     int blNum = RxdBuffer[pRxData + 1];
                                     blNum = blNum % DataStorage.bldata_t.length;
-                                     if ((DataStorage.bldata_t[blNum].requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                      //   for (BLData_t bld : DataStorage.bldata_t) {
-                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
-                                      //   }
+                                    
+                                    if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        //System.out.println("BLDATA_TIME: " + RxdBuffer[pRxData] * 10 + " sending " + blNum);
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
+                                       // System.out.println("sending " + blNum + " with " + DataStorage.bldata_t[blNum].Temperature);
+//                                         for (BLData_t bld : DataStorage.bldata_t) {                                            
+//                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', bld.getAsInt());
+//                                       }
                                     }
-                                  //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
+                                    //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
                                     break;
                                 case 'l':// reqest for display columns
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " reqest for display columns");
@@ -362,9 +366,10 @@ public class CommunicationBase {
                                     break;
                                 case 'q':// "Get"-Anforderung für Settings
                                     int para = RxdBuffer[pRxData];
-                                    if ( para==0xFF )
-                                        para=DataStorage.activeParamset;
-                                    
+                                    if (para == 0xFF) {
+                                        para = DataStorage.activeParamset;
+                                    }
+
                                     if (para > 5) {
                                         para = 5;
                                     }
@@ -375,9 +380,9 @@ public class CommunicationBase {
 //                                    System.out.println(" setting to FC ");
                                     if (1 <= RxdBuffer[pRxData] && RxdBuffer[pRxData] <= 5) {
                                         tempchar = RxdBuffer[pRxData];
-                                        
-                                        DataStorage.activeParamset=tempchar;
-                                       System.out.println("Set active setting to " + tempchar);
+
+                                        DataStorage.activeParamset = tempchar;
+                                        System.out.println("Set active setting to " + tempchar);
                                         //tempchar1 = GetActiveParamSet();
 //                                        System.out.println(RxDataLen + " RxDataLen");
 //                                        for (int i : RxdBuffer) {
@@ -392,12 +397,12 @@ public class CommunicationBase {
                                     DataStorage.encoder.send_command(FC_ADDRESS, 'S', new int[]{tempchar});
                                     break;
                                 case 'f': // auf anderen Parametersatz umschalten
-                                    {
-                                       tempchar = RxdBuffer[pRxData];
-                                       System.out.println("Set active setting to " + tempchar);
-                                       DataStorage.encoder.send_command(FC_ADDRESS, 'F', new int[]{tempchar});
-                                    }
-                                    break;
+                                {
+                                    tempchar = RxdBuffer[pRxData];
+                                    System.out.println("Set active setting to " + tempchar);
+                                    DataStorage.encoder.send_command(FC_ADDRESS, 'F', new int[]{tempchar});
+                                }
+                                break;
                                 case 'y':// serial Potis
 //                                    PPM_in[13] = (signed char) pRxData[0]; PPM_in[14] = (signed char) pRxData[1]; PPM_in[15] = (signed char) pRxData[2]; PPM_in[16] = (signed char) pRxData[3];
 //                                    PPM_in[17] = (signed char) pRxData[4]; PPM_in[18] = (signed char) pRxData[5]; PPM_in[19] = (signed char) pRxData[6]; PPM_in[20] = (signed char) pRxData[7];

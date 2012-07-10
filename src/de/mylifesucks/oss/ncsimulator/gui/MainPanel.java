@@ -12,13 +12,10 @@ import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
-import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
-import de.mylifesucks.oss.ncsimulator.datatypes.u16;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -30,7 +27,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.NumberFormat;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -363,11 +359,11 @@ public class MainPanel extends JPanel {
             
             Waypoint_t wp = DataStorage.waypointList[i];
             
-            JPanel motorPanel = new JPanel(new GridBagLayout());
-            GridBagConstraints motorgcgbc = new GridBagConstraints();
-            motorgcgbc.gridy++;
-            wp.addToPanel(motorPanel, motorgcgbc);
-            wpListPane.add(motorPanel);
+            JPanel wpPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints wpgbc = new GridBagConstraints();
+            wpgbc.gridy++;
+            wp.addToPanel(wpPanel, wpgbc);
+            wpListPane.add(wpPanel);
             
             wpListPane.add(new JLabel("Label1"));
         }
@@ -398,8 +394,8 @@ public class MainPanel extends JPanel {
 //            waipointsPanel.add("Waypoint " + (i + 1), setPanel);
 //        }
 //        tabbed.addTab("Motor", waipointsPanel);
-//
-//
+
+
 //
 //        JPanel wpPanel = new JPanel(new GridBagLayout());
 //        GridBagConstraints wpdgbc = new GridBagConstraints();
