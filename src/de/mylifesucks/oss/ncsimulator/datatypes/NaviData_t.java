@@ -52,7 +52,7 @@ public class NaviData_t extends c_int implements Observer{
     public s16 SetpointAltitude = new s16("SetpointAltitude",-3000,3000); // setpoint for altitude
     public u8 Gas = new u8("Gas"); // for future use
     public u16 Current = new u16("Current",1500); // actual current in 0.1A steps
-    public u16 UsedCapacity = new u16("UsedCapacity",8000); // used capacity in mAh
+    public u16 UsedCapacity = new u16("UsedCapacity",16000); // used capacity in mAh
 
     public NaviData_t() {
         super();
