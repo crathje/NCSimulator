@@ -25,6 +25,16 @@ public class TestDecode {
     public static void main(String[] args) {
 
         Encode e = new Encode(System.out);
+        
+        
+        
+   
+        e.send_command(CommunicationBase.FC_ADDRESS, 'o', new int[] {10});
+
+        
+       System.exit(0);
+        
+        
 
         str_ExternControl ex = new str_ExternControl();
         ex.Nick.value = -106;

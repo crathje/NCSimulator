@@ -18,7 +18,7 @@ public class SendThread extends Thread {
 
     int calls = 0;
     long lasttime = System.currentTimeMillis();
-    long osdLasttime = lasttime, FCdebugLasttime = lasttime, NCdebugLasttime = lasttime, data3DLasttime = lasttime, lcdLasttime = lasttime;
+    long osdLasttime = lasttime, FCdebugLasttime = lasttime, NCdebugLasttime = lasttime, strdata3DLasttime = lasttime, data3DLasttime = lasttime, lcdLasttime = lasttime;
     long sleeptime = 50;
     long reqestosdlasttime = lasttime;
     long reqestdebuglasttime = lasttime;
@@ -63,8 +63,8 @@ public class SendThread extends Thread {
                         }
                         if (DataStorage.data3d_t.requestTime > 0 && System.currentTimeMillis() + sleeptime > data3DLasttime + DataStorage.data3d_t.requestTime) {
                             data3DLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS + 1, 'C', DataStorage.data3d_t.getAsInt());
-                            //System.out.println("3D autosend");
+                            DataStorage.encoder.send_command(CommunicationBase.NC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+//                            System.out.println("3D NC autosend");
                         }
                         if (DataStorage.lcddata.requestTime > 0 && System.currentTimeMillis() + sleeptime > lcdLasttime + DataStorage.lcddata.requestTime) {
                             lcdLasttime = System.currentTimeMillis();
@@ -89,9 +89,9 @@ public class SendThread extends Thread {
                             DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
                             //System.out.println("Debug autosend");
                         }
-                        if (DataStorage.data3d_t.requestTime > 0 && System.currentTimeMillis() + sleeptime > data3DLasttime + DataStorage.data3d_t.requestTime) {
-                            data3DLasttime = System.currentTimeMillis();
-                            DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                        if (DataStorage.str_Data3D.requestTime > 0 && System.currentTimeMillis() + sleeptime > strdata3DLasttime + DataStorage.str_Data3D.requestTime) {
+                            strdata3DLasttime = System.currentTimeMillis();
+                            DataStorage.encoder.send_command(CommunicationBase.FC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
                             //System.out.println("3D autosend");
                         }
                         break;

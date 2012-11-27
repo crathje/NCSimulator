@@ -313,11 +313,11 @@ public class MainPanel extends JPanel {
             oblgbc.gridy++;
             oblgbc.gridx = 0;
             oblgbc.gridwidth = GridBagConstraints.REMAINDER;
-            blPanel.add(new JLabel("BLCtrl #"+bld.Index.value), oblgbc);
+            blPanel.add(new JLabel("BLCtrl #" + bld.Index.value), oblgbc);
             oblgbc.gridy++;
             oblgbc.gridwidth = 1;
             bld.addToPanel(blPanel, oblgbc);
-            
+
         }
         JScrollPane blScrollpane = new JScrollPane(blPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("BLCtrl", blScrollpane);
@@ -325,46 +325,46 @@ public class MainPanel extends JPanel {
 //        motorgcgbc.gridy++;
 //        motor.addToPanel(motorPanel, motorgcgbc);
 
-      /*  JPanel listPane = new JPanel();
+        /*  JPanel listPane = new JPanel();
         listPane.setLayout(new BoxLayout(listPane, BoxLayout.PAGE_AXIS));
         listPane.add(new JLabel("Label1"));
         listPane.add(new JLabel("Label1"));
-
+        
         for (int i = 0; i < DataStorage.motors.length; i++) {
-            Motor_t motor = new Motor_t(i);
-
-            DataStorage.motors[i] = motor;
-
-            JPanel motorPanel = new JPanel(new GridBagLayout());
-            GridBagConstraints motorgcgbc = new GridBagConstraints();
-            motorgcgbc.gridy++;
-            motor.addToPanel(motorPanel, motorgcgbc);
-            listPane.add(motorPanel);
-
-            listPane.add(new JLabel("Label1"));
+        Motor_t motor = new Motor_t(i);
+        
+        DataStorage.motors[i] = motor;
+        
+        JPanel motorPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints motorgcgbc = new GridBagConstraints();
+        motorgcgbc.gridy++;
+        motor.addToPanel(motorPanel, motorgcgbc);
+        listPane.add(motorPanel);
+        
+        listPane.add(new JLabel("Label1"));
         }
         listPane.add(new JLabel("Label1"));
         listPane.add(new JLabel("Label1"));
-
+        
         JScrollPane motorFCScrollpane = new JScrollPane(listPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("MotorData", motorFCScrollpane);*/
 
         DataStorage.clearWP();
-        
+
         JPanel wpListPane = new JPanel();
         wpListPane.setLayout(new BoxLayout(wpListPane, BoxLayout.PAGE_AXIS));
         wpListPane.add(new JLabel("Label1"));
         wpListPane.add(new JLabel("Label1"));
         for (int i = 0; i < 10; i++) {
-            
+
             Waypoint_t wp = DataStorage.waypointList[i];
-            
+
             JPanel wpPanel = new JPanel(new GridBagLayout());
             GridBagConstraints wpgbc = new GridBagConstraints();
             wpgbc.gridy++;
             wp.addToPanel(wpPanel, wpgbc);
             wpListPane.add(wpPanel);
-            
+
             wpListPane.add(new JLabel("Label1"));
         }
         wpListPane.add(new JLabel("Label1"));
@@ -372,7 +372,7 @@ public class MainPanel extends JPanel {
 
         JScrollPane waypointScrollpane = new JScrollPane(wpListPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("Waypoints", waypointScrollpane);
-        
+
 //        JTabbedPane waipointsPanel = new JTabbedPane();
 //        waipointsPanel.setLayout(new BoxLayout(waipointsPanel, BoxLayout.PAGE_AXIS));
 //
@@ -453,9 +453,17 @@ public class MainPanel extends JPanel {
         JPanel Val3dPanel = new JPanel(new GridBagLayout());
         GridBagConstraints val3dgbc = new GridBagConstraints();
         val3dgbc.gridy++;
-        DataStorage.data3d_t.addToPanel(Val3dPanel, val3dgbc);
+        DataStorage.str_Data3D.addToPanel(Val3dPanel, val3dgbc);
         JScrollPane val3dScrollpane = new JScrollPane(Val3dPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("3D Values", val3dScrollpane);
+        tabbed.addTab("3D Values (FC)", val3dScrollpane);
+
+
+        JPanel Val3dncPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints val3dncgbc = new GridBagConstraints();
+        val3dncgbc.gridy++;
+        DataStorage.data3d_t.addToPanel(Val3dncPanel, val3dncgbc);
+        JScrollPane val3dncScrollpane = new JScrollPane(Val3dncPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("3D Values (NC)", val3dncScrollpane);
 
 
         DataStorage.FCversion.SWMajor.value = 0;

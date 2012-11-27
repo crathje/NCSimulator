@@ -88,6 +88,8 @@ public class CommunicationBase {
                         BearbeiteRxDaten(RxdBuffer_work);
                     }
                 });
+            } else {
+//                System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen + " CrcOkay: " + CrcOkay);
             }
         } else {
             switch (UartState) {
@@ -170,6 +172,7 @@ public class CommunicationBase {
 
     public void BearbeiteRxDaten(int[] RxdBuffer) {
         if (!NeuerDatensatzEmpfangen) {
+//             System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen );
             return;
         }
 
@@ -212,11 +215,18 @@ public class CommunicationBase {
 
 //            System.out.println("command for: " + (RxdBuffer[1] - 'a') + " -> " + (char)RxdBuffer[2]);
 
+            
             switch (DataStorage.UART) {
                 case NC:
                     switch (RxdBuffer[1] - 'a') {
                         case CommunicationBase.NC_ADDRESS:
                             switch (RxdBuffer[2]) {
+                                case 'c': // request for 3d info
+                                    //System.out.println("3D from NC");
+                                    if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                    }
+                                    break;
                                 case 'z': // connection checker
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " connection checker ");
                                     break;
@@ -304,8 +314,8 @@ public class CommunicationBase {
                                     }
                                     break;
                                 case 'c': // request for 3D data;
-                                    if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                    if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
                                     }
                                     break;
                                 case 'h':// reqest for display line
@@ -316,11 +326,11 @@ public class CommunicationBase {
                                 case 'k':// BL Ctrl Status
                                     int blNum = RxdBuffer[pRxData + 1];
                                     blNum = blNum % DataStorage.bldata_t.length;
-                                    
+
                                     if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
                                         //System.out.println("BLDATA_TIME: " + RxdBuffer[pRxData] * 10 + " sending " + blNum);
                                         DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
-                                       // System.out.println("sending " + blNum + " with " + DataStorage.bldata_t[blNum].Temperature);
+                                        // System.out.println("sending " + blNum + " with " + DataStorage.bldata_t[blNum].Temperature);
 //                                         for (BLData_t bld : DataStorage.bldata_t) {                                            
 //                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', bld.getAsInt());
 //                                       }
@@ -431,8 +441,8 @@ public class CommunicationBase {
                                 case 'b': // ExternControl
                                     break;
                                 case 'c': // request for 3D data;
-                                    if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                    if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
                                     }
                                     break;
                                 case 'd': // Poll the debug data

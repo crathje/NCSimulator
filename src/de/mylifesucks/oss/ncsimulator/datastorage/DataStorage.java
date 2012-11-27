@@ -10,6 +10,7 @@ package de.mylifesucks.oss.ncsimulator.datastorage;
 
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Data3D_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.str_Data3D;
 import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.NaviData_t;
@@ -71,6 +72,7 @@ public class DataStorage {
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
+    public static str_Data3D str_Data3D = new str_Data3D();
     public static Data3D_t data3d_t = new Data3D_t();
     public static BLData_t bldata_t[] = new BLData_t[12];
     public static Preferences preferences;
