@@ -9,7 +9,9 @@
 package de.mylifesucks.oss.ncsimulator.testing;
 
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
+import de.mylifesucks.oss.ncsimulator.datatypes.s8;
 import de.mylifesucks.oss.ncsimulator.datatypes.str_ExternControl;
+import de.mylifesucks.oss.ncsimulator.datatypes.u16;
 import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 
@@ -25,16 +27,37 @@ public class TestDecode {
     public static void main(String[] args) {
 
         Encode e = new Encode(System.out);
-        
-        
-        
-   
-        e.send_command(CommunicationBase.FC_ADDRESS, 'o', new int[] {10});
 
+        s8[] serialPotis = new s8[12];
+        int[] ret = new int[0];
+        for (int i = 0; i < serialPotis.length; i++) {
+            serialPotis[i] = new s8("Serial Poti " + i);
+            serialPotis[i].setValue(-2 * i + 5, false);
+            ret = c_int.concatArray(ret, serialPotis[i].getAsInt());
+        }
         
-       System.exit(0);
+        e.send_command(CommunicationBase.FC_ADDRESS, 'y', ret);
         
+        System.out.println("+++++++");
         
+        u16 echo = new u16("echo");
+        echo.value = 123;
+        e.send_command(CommunicationBase.NC_ADDRESS, 'Z', echo.getAsInt());
+
+
+        //e.send_command(CommunicationBase.FC_ADDRESS, 'o', new int[] {10});
+
+
+        String u16in_raw = "#czBm==Ef\r";
+        String u16in = u16in_raw.substring(3); // cut off start sign, address and command
+        int[] u16decoded = Encode.Decode64(u16in.getBytes(), u16in.getBytes().length);
+        u16 u16indec = new u16("loaded");
+        u16indec.loadFromInt(u16decoded, 0);
+        System.out.println("u16: " + u16indec.value);
+
+        System.exit(0);
+
+
 
         str_ExternControl ex = new str_ExternControl();
         ex.Nick.value = -106;

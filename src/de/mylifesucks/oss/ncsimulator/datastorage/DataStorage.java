@@ -29,7 +29,6 @@ import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

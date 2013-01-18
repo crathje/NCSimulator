@@ -425,14 +425,24 @@ public class MainPanel extends JPanel {
         debuggcgbc.gridy++;
         DataStorage.FCDebugOut.addToPanel(debugFCValPanel, debuggcgbc);
         JScrollPane debugFCScrollpane = new JScrollPane(debugFCValPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("FC Debug Values", debugFCScrollpane);
+        tabbed.addTab("FC Debug", debugFCScrollpane);
+
+
+        JPanel ppmArrayPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints ppmArraygbc = new GridBagConstraints();
+        ppmArraygbc.gridy++;
+        DataStorage.ppmarray.addToPanel(ppmArrayPanel, ppmArraygbc);
+        JScrollPane ppmArrayScrollpane = new JScrollPane(ppmArrayPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("PPM", ppmArrayScrollpane);
+
+
 
         JPanel debugNCValPanel = new JPanel(new GridBagLayout());
         GridBagConstraints debugncgbc = new GridBagConstraints();
         debugncgbc.gridy++;
         DataStorage.NCDebugOut.addToPanel(debugNCValPanel, debugncgbc);
         JScrollPane debugNCScrollpane = new JScrollPane(debugNCValPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("NC Debug Values", debugNCScrollpane);
+        tabbed.addTab("NC Debug", debugNCScrollpane);
 
 
         JTabbedPane paramPanel = new JTabbedPane();
@@ -455,7 +465,7 @@ public class MainPanel extends JPanel {
         val3dgbc.gridy++;
         DataStorage.str_Data3D.addToPanel(Val3dPanel, val3dgbc);
         JScrollPane val3dScrollpane = new JScrollPane(Val3dPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("3D Values (FC)", val3dScrollpane);
+        tabbed.addTab("3D (FC)", val3dScrollpane);
 
 
         JPanel Val3dncPanel = new JPanel(new GridBagLayout());
@@ -463,7 +473,7 @@ public class MainPanel extends JPanel {
         val3dncgbc.gridy++;
         DataStorage.data3d_t.addToPanel(Val3dncPanel, val3dncgbc);
         JScrollPane val3dncScrollpane = new JScrollPane(Val3dncPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tabbed.addTab("3D Values (NC)", val3dncScrollpane);
+        tabbed.addTab("3D (NC)", val3dncScrollpane);
 
 
         DataStorage.FCversion.SWMajor.value = 0;

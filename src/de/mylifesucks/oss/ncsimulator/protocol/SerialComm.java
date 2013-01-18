@@ -18,7 +18,7 @@ import gnu.io.*;
  *
  * @author fblumenberg
  */
-public class SerialComm extends CommunicationBase implements Runnable,SerialPortEventListener {
+public class SerialComm extends CommunicationBase implements Runnable, SerialPortEventListener {
 
     static CommPortIdentifier portId;
     static CommPortIdentifier saveportId;
@@ -28,7 +28,7 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
     boolean isUSB;
     static HashMap<String, CommPortIdentifier> portMap;
 
-        public static HashMap<String, CommPortIdentifier> getPorts() {
+    public static HashMap<String, CommPortIdentifier> getPorts() {
         if (portMap == null) {
             portMap = new HashMap<String, CommPortIdentifier>();
             Enumeration portList = CommPortIdentifier.getPortIdentifiers();
@@ -41,12 +41,6 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
         }
         return portMap;
     }
-
-
-
-
-
-
 
     public void initwritetoport() {
         // initwritetoport() assumes that the port has already been opened and
@@ -104,12 +98,12 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
         System.out.println("Set default port to " + defaultPort);
 
         // parse ports and if the default port is found, initialized the reader
-       
+
         if (!portMap.keySet().contains(defaultPort)) {
             System.out.println("port " + defaultPort + " not found.");
             System.exit(0);
         }
-        
+
         portId = portMap.get(defaultPort);
         serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
         inputStream = serialPort.getInputStream();
@@ -141,7 +135,6 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
             }
         }
     }
-
     byte[] readBuffer = new byte[220];
 
     /**
@@ -194,6 +187,4 @@ public class SerialComm extends CommunicationBase implements Runnable,SerialPort
                 break;
         }
     }
-
-
 }

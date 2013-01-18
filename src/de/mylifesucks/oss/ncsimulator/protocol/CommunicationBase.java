@@ -12,6 +12,7 @@ import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
+import de.mylifesucks.oss.ncsimulator.datatypes.s8;
 import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
 import java.io.*;
 import java.util.*;
@@ -215,7 +216,7 @@ public class CommunicationBase {
 
 //            System.out.println("command for: " + (RxdBuffer[1] - 'a') + " -> " + (char)RxdBuffer[2]);
 
-            
+
             switch (DataStorage.UART) {
                 case NC:
                     switch (RxdBuffer[1] - 'a') {
@@ -417,6 +418,12 @@ public class CommunicationBase {
 //                                    PPM_in[13] = (signed char) pRxData[0]; PPM_in[14] = (signed char) pRxData[1]; PPM_in[15] = (signed char) pRxData[2]; PPM_in[16] = (signed char) pRxData[3];
 //                                    PPM_in[17] = (signed char) pRxData[4]; PPM_in[18] = (signed char) pRxData[5]; PPM_in[19] = (signed char) pRxData[6]; PPM_in[20] = (signed char) pRxData[7];
 //                                    PPM_in[21] = (signed char) pRxData[8]; PPM_in[22] = (signed char) pRxData[9]; PPM_in[23] = (signed char) pRxData[10]; PPM_in[24] = (signed char) pRxData[11];
+                                    s8 tempVal = new s8("temp");
+                                    for (int i = 0; i < 12; i++) {
+                                        tempVal.loadFromInt(RxdBuffer, pRxData + i);
+//                                        System.out.println("serial Poti value: " + tempVal.value);
+                                        DataStorage.ppmarray.PPMArray[13 + i].setValue(tempVal.value, false);
+                                    }
                                     break;
                                 case 'u': // request BL parameter
                                     break;

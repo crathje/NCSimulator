@@ -22,7 +22,7 @@ public class PPMArray extends c_int {
     public PPMArray() {
         allAttribs = new LinkedList<c_int>();
         for (int i = 0; i < PPMArray.length; i++) {
-            s16 c = new s16("Kanalbelegung " + i);
+            s16 c = new s16("Kanal " + i);
             PPMArray[i] = c;
             allAttribs.add(c);
         }
