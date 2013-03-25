@@ -67,7 +67,7 @@ public class DataStorage {
     public static str_DebugOut MK3MAGDebugOut = new str_DebugOut("MK3MAG", CommunicationBase.MK3MAG_ADDRESS);
     public static paramset_t paramset[] = new paramset_t[5];
     public static int activeParamset = 3;
-    public static Waypoint_t waypointList[] = new Waypoint_t[100];
+    public static Waypoint_t waypointList[] = new Waypoint_t[250];
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
@@ -88,6 +88,8 @@ public class DataStorage {
     public static final String nodeName = "NC Simulator";
     public static DataWindowPanel dataWindowPanel;
     public static int motorCounter = 0;
+    
+    public static boolean hasNC = true;
 
     private DataStorage() {
         iconHome = new ImageIcon(getClass().getResource("/de/mylifesucks/oss/ncsimulator/img/home.png"));
@@ -113,7 +115,7 @@ public class DataStorage {
 
 
         if (waypointList == null || waypointList[0] == null) {
-            waypointList = new Waypoint_t[100];
+            waypointList = new Waypoint_t[400];
             for (int i = 0; i < waypointList.length; i++) {
                 waypointList[i] = getEmptyWP(i + 1);
             }
@@ -167,8 +169,12 @@ public class DataStorage {
     }
 
     public static void setUART(UART_CONNECTION u) {
-        UART = u;
-        DataStorage.statusBar.uartMode.setText(u.name());
+
+        if (u != UART_CONNECTION.NC || (u == UART_CONNECTION.NC && DataStorage.hasNC)) {
+            UART = u;
+        }
+
+        DataStorage.statusBar.uartMode.setText(UART.name());
     }
 
     public static void addToSerializePool(c_int re) {

@@ -1,9 +1,8 @@
 /**
  *
  * Copyright (C) 2010-2011 by Claas Anders "CaScAdE" Rathje
- * admiralcascade@gmail.com
- * Licensed under: Creative Commons / Non Commercial / Share Alike
- * http://creativecommons.org/licenses/by-nc-sa/2.0/de/
+ * admiralcascade@gmail.com Licensed under: Creative Commons / Non Commercial /
+ * Share Alike http://creativecommons.org/licenses/by-nc-sa/2.0/de/
  *
  */
 package de.mylifesucks.oss.ncsimulator.protocol;
@@ -62,7 +61,8 @@ public class CommunicationBase {
             CrcOkay = false;
             if ((crc1 == RxdBuffer[buf_ptr - 2]) && (crc2 == RxdBuffer[buf_ptr - 1])) {
                 CrcOkay = true;
-            } else {
+            }
+            else {
                 CrcOkay = false;
 
             }
@@ -73,26 +73,27 @@ public class CommunicationBase {
                 RxdBuffer[buf_ptr] = '\r';
 
                 /*if (RxdBuffer[2] == 'R') {
-                LcdClear();
-                wdt_enable(WDTO_250MS); // Reset-Commando
-                ServoActive = 0;
+                 LcdClear();
+                 wdt_enable(WDTO_250MS); // Reset-Commando
+                 ServoActive = 0;
                 
-                }*/
+                 }*/
 
                 final int RxdBuffer_work[] = new int[MAX_EMPFANGS_BUFF];
                 System.arraycopy(RxdBuffer, 0, RxdBuffer_work, 0, RxdBuffer.length);
                 // thread away the data handling 
                 DataStorage.executors.submit(new Runnable() {
-
                     public void run() {
 
                         BearbeiteRxDaten(RxdBuffer_work);
                     }
                 });
-            } else {
+            }
+            else {
 //                System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen + " CrcOkay: " + CrcOkay);
             }
-        } else {
+        }
+        else {
             switch (UartState) {
                 case 0:
                     if (SioTmp == '#' && !NeuerDatensatzEmpfangen) {
@@ -111,7 +112,8 @@ public class CommunicationBase {
                     RxdBuffer[buf_ptr] = SioTmp;
                     if (buf_ptr < MAX_EMPFANGS_BUFF) {
                         buf_ptr++;
-                    } else {
+                    }
+                    else {
                         UartState = 0;
                     }
                     crc += SioTmp;
@@ -143,7 +145,8 @@ public class CommunicationBase {
                 b = RxdBuffer[ptrIn++] - '=';
                 c = RxdBuffer[ptrIn++] - '=';
                 d = RxdBuffer[ptrIn++] - '=';
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
             }
 
             x = (a << 2) | (b >> 4);
@@ -152,17 +155,20 @@ public class CommunicationBase {
 
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = x;
-            } else {
+            }
+            else {
                 break;
             }
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = y;
-            } else {
+            }
+            else {
                 break;
             }
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = z;
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -184,7 +190,9 @@ public class CommunicationBase {
             out += (char) RxdBuffer[i];
         }
 //        System.out.println(out);
-        LogPanel.giveMessage(out, LogPanel.green);
+        
+        if(LogPanel.showInput.isSelected())
+            LogPanel.giveMessage(out, LogPanel.green);
 
 //        int i = 0;
 //        while (i < AnzahlEmpfangsBytes) {
@@ -195,7 +203,7 @@ public class CommunicationBase {
 //        System.out.print(" decoded: ");
         Decode64(RxdBuffer);
 
-
+        try {
 
 //        i = pRxData;
 //        while (i < RxDataLen) {
@@ -211,302 +219,316 @@ public class CommunicationBase {
 //        }
 //        System.out.println();
 
-        if (outputStream != null) {
-            int tempchar = 0;
+            if (outputStream != null) {
+                int tempchar = 0;
 
 //            System.out.println("command for: " + (RxdBuffer[1] - 'a') + " -> " + (char)RxdBuffer[2]);
 
 
-            switch (DataStorage.UART) {
-                case NC:
-                    switch (RxdBuffer[1] - 'a') {
-                        case CommunicationBase.NC_ADDRESS:
-                            switch (RxdBuffer[2]) {
-                                case 'c': // request for 3d info
-                                    //System.out.println("3D from NC");
-                                    if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
-                                    }
-                                    break;
-                                case 'z': // connection checker
+                switch (DataStorage.UART) {
+                    case NC:
+                        switch (RxdBuffer[1] - 'a') {
+                            case CommunicationBase.NC_ADDRESS:
+                                switch (RxdBuffer[2]) {
+                                    case 'c': // request for 3d info
+                                        //System.out.println("3D from NC");
+                                        if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.data3d_t.getAsInt());
+                                        }
+                                        break;
+                                    case 'z': // connection checker
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " connection checker ");
-                                    break;
-                                case 'e': // request for the text of the error status
+                                        break;
+                                    case 'e': // request for the text of the error status
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for the text of the error status ");
-                                    break;
-                                case 's'://  new target position
-                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " new target position");
-                                    break;
-                                case 'u': // redirect debug uart
-                                    switch (RxdBuffer[pRxData]) {
-                                        case 0:
-                                            DataStorage.setUART(DataStorage.UART_CONNECTION.FC);
-                                            break;
-                                        case 1:
-                                            DataStorage.setUART(DataStorage.UART_CONNECTION.MK3MAG);
-                                            break;
-                                        case 2:
-                                            DataStorage.setUART(DataStorage.UART_CONNECTION.MKGPS);
-                                            break;
-                                    }
-                                    //System.out.println(" switched uart to " + DataStorage.UART.name());
-                                    break;
-                                case 'w'://  Append Waypoint to List
+                                        break;
+                                    case 's'://  new target position
+                                        System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " new target position");
+                                        break;
+                                    case 'u': // redirect debug uart
+                                        switch (RxdBuffer[pRxData]) {
+                                            case 0:
+                                                DataStorage.setUART(DataStorage.UART_CONNECTION.FC);
+                                                break;
+                                            case 1:
+                                                DataStorage.setUART(DataStorage.UART_CONNECTION.MK3MAG);
+                                                break;
+                                            case 2:
+                                                DataStorage.setUART(DataStorage.UART_CONNECTION.MKGPS);
+                                                break;
+                                        }
+                                        //System.out.println(" switched uart to " + DataStorage.UART.name());
+                                        break;
+                                    case 'w'://  Append Waypoint to List
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Append Waypoint to List");
 //                                    System.out.println(out);
 
-                                    Waypoint_t rec = new Waypoint_t("recieved WP");
-                                    rec.loadFromInt(RxdBuffer, pRxData);
+                                        Waypoint_t rec = new Waypoint_t("recieved WP");
+                                        rec.loadFromInt(RxdBuffer, pRxData);
 
 
-                                    System.out.println("recieved WP " + rec.Index.value);
+                                        System.out.println("recieved WP " + rec.Index.value);
 //
-                                    if ((rec.Position.Status.value == Waypoint_t.INVALID) && (rec.Index.value == 0)) {
-                                        System.out.println("Clear WP");
-                                        DataStorage.clearWP();
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
-                                    } else {
-                                        System.out.println("Set WP " + rec.Index.value);
+                                        if ((rec.Position.Status.value == Waypoint_t.INVALID) && (rec.Index.value == 0)) {
+                                            System.out.println("Clear WP");
+                                            DataStorage.clearWP();
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
+                                        }
+                                        else {
+                                            System.out.println("Set WP " + rec.Index.value);
 
-                                        DataStorage.waypointList[(int) (rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
-                                    }
+                                            if (rec.Index.value > 32) {
+                                                System.out.println("Invalid index " + rec.Index.value);
+                                                rec.Index.value = 254;
+                                            }
+                                            else {
+                                                DataStorage.waypointList[(int) (rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
+                                            }
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
+                                        }
 //                                    rec.printOut();
-                                    break;
-                                case 'x'://  Read Waypoint from List
-                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
-                                    int index = RxdBuffer[pRxData];
-                                    System.out.println("Read index " + index);
-                                    if (index <= DataStorage.waypointList.length) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.length, index}, DataStorage.waypointList[index - 1].getAsInt()));
-                                    } else {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.length});
-                                    }
-                                    break;
-                                case 'j':// Set/Get NC-Parameter
+                                        break;
+                                    case 'x'://  Read Waypoint from List
+                                        System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
+                                        int index = RxdBuffer[pRxData];
+                                        System.out.println("Read index " + index);
+                                        if (index <= DataStorage.waypointList.length) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.length, index}, DataStorage.waypointList[index - 1].getAsInt()));
+                                        }
+                                        else {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.length});
+                                        }
+                                        break;
+                                    case 'j':// Set/Get NC-Parameter
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Set/Get NC-Parameter");
-                                    break;
-                                case 'O':// OSD Dataset from someone else
-                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " OSD Data from elsewhere");
-                                    DataStorage.naviData.loadFromInt(RxdBuffer, pRxData);
-                                    DataStorage.coordVizualizer.update();
-                                    break;
-                                default:
-                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " unsupported command recieved");
-                                    // unsupported command recieved
-                                    break;
-                            }
-                        // "break;" is missing here to fall thru to the common commands
+                                        break;
+                                    case 'O':// OSD Dataset from someone else
+                                        //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " OSD Data from elsewhere");
+                                        DataStorage.naviData.loadFromInt(RxdBuffer, pRxData);
+                                        DataStorage.coordVizualizer.update();
+                                        break;
+                                    default:
+                                        //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " unsupported command recieved");
+                                        // unsupported command recieved
+                                        break;
+                                }
+                            // "break;" is missing here to fall thru to the common commands
 
-                        default:
-                            switch (RxdBuffer[2]) {
-                                case 'a':// request for the labels of the analog debug outputs
-                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for the labels of the analog debug outputs");
-                                    int index = RxdBuffer[pRxData];
-                                    if (index > 31) {
-                                        index = 31;
-                                    }
-                                    DataStorage.encoder.send_command(NC_ADDRESS, 'A', DataStorage.NCDebugOut.Analog[index].getLabelArray());
-                                    break;
-                                case 'd': // request for debug data
-                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for debug data");
-                                    if ((DataStorage.NCDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'D', DataStorage.NCDebugOut.getAsInt());
-                                    }
-                                    break;
-                                case 'c': // request for 3D data;
-                                    if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
-                                    }
-                                    break;
-                                case 'h':// reqest for display line
-                                    if ((DataStorage.lcddata.requestTime = RxdBuffer[pRxData + 1] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
-                                    }
-                                    break;
-                                case 'k':// BL Ctrl Status
-                                    int blNum = RxdBuffer[pRxData + 1];
-                                    blNum = blNum % DataStorage.bldata_t.length;
+                            default:
+                                switch (RxdBuffer[2]) {
+                                    case 'a':// request for the labels of the analog debug outputs
+                                        //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for the labels of the analog debug outputs");
+                                        int index = RxdBuffer[pRxData];
+                                        if (index > 31) {
+                                            index = 31;
+                                        }
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'A', DataStorage.NCDebugOut.Analog[index].getLabelArray());
+                                        break;
+                                    case 'd': // request for debug data
+                                        //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " request for debug data");
+                                        if ((DataStorage.NCDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'D', DataStorage.NCDebugOut.getAsInt());
+                                        }
+                                        break;
+                                    case 'c': // request for 3D data;
+                                        if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
+                                        }
+                                        break;
+                                    case 'h':// reqest for display line
+                                        if ((DataStorage.lcddata.requestTime = RxdBuffer[pRxData + 1] * 10) > 0) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
+                                        }
+                                        break;
+                                    case 'k':// BL Ctrl Status
+                                        int blNum = RxdBuffer[pRxData + 1];
+                                        blNum = blNum % DataStorage.bldata_t.length;
 
-                                    if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        //System.out.println("BLDATA_TIME: " + RxdBuffer[pRxData] * 10 + " sending " + blNum);
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
-                                        // System.out.println("sending " + blNum + " with " + DataStorage.bldata_t[blNum].Temperature);
+                                        if ((DataStorage.bldata_t[0].requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            //System.out.println("BLDATA_TIME: " + RxdBuffer[pRxData] * 10 + " sending " + blNum);
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', DataStorage.bldata_t[blNum].getAsInt());
+                                            // System.out.println("sending " + blNum + " with " + DataStorage.bldata_t[blNum].Temperature);
 //                                         for (BLData_t bld : DataStorage.bldata_t) {                                            
 //                                            DataStorage.encoder.send_command(NC_ADDRESS, 'K', bld.getAsInt());
 //                                       }
-                                    }
-                                    //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
-                                    break;
-                                case 'l':// reqest for display columns
+                                        }
+                                        //  System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " BL Ctrl Status from #" + blNum);
+                                        break;
+                                    case 'l':// reqest for display columns
 //                                    System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " reqest for display columns");
-                                    DataStorage.encoder.send_command(NC_ADDRESS, 'L', DataStorage.lcddata.getAsInt());
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'L', DataStorage.lcddata.getAsInt());
 
-                                    break;
-                                case 'o': // request for navigation information
-                                    if ((DataStorage.naviData.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
-                                    }
-                                    break;
-                                case 'v': // request for version info
-                                    DataStorage.encoder.send_command(NC_ADDRESS, 'V', DataStorage.NCversion.getAsInt());
-                                    break;
-                                case 'D':// Debug Dataset from someone else
-                                    //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " DEBUG Data from elsewhere");
-                                    DataStorage.FCDebugOut.loadFromInt(RxdBuffer, pRxData);
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-                case FC:
-                    switch (RxdBuffer[1] - 'a') {
-                        case CommunicationBase.FC_ADDRESS:
-                            switch (RxdBuffer[2]) {
-                                case 'K':// Kompasswert
-                                    break;
-                                case 't':// Motortest
-                                    break;
-                                case 'n':// "Get Mixer
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'N', DataStorage.mixerset.getAsInt());
-                                    break;
-                                case 'm':// "Write Mixer
-                                    break;
-                                case 'p': // get PPM Channels
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'P', DataStorage.ppmarray.getAsInt());
-                                    break;
-                                case 'q':// "Get"-Anforderung für Settings
-                                    int para = RxdBuffer[pRxData];
-                                    if (para == 0xFF) {
-                                        para = DataStorage.activeParamset;
-                                    }
+                                        break;
+                                    case 'o': // request for navigation information
+                                        if ((DataStorage.naviData.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'O', DataStorage.naviData.getAsInt());
+                                        }
+                                        break;
+                                    case 'v': // request for version info
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'V', DataStorage.NCversion.getAsInt());
+                                        break;
+                                    case 'D':// Debug Dataset from someone else
+                                        //System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " DEBUG Data from elsewhere");
+                                        DataStorage.FCDebugOut.loadFromInt(RxdBuffer, pRxData);
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                    case FC:
+                        switch (RxdBuffer[1] - 'a') {
+                            case CommunicationBase.FC_ADDRESS:
+                                switch (RxdBuffer[2]) {
+                                    case 'K':// Kompasswert
+                                        break;
+                                    case 't':// Motortest
+                                        break;
+                                    case 'n':// "Get Mixer
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'N', DataStorage.mixerset.getAsInt());
+                                        break;
+                                    case 'm':// "Write Mixer
+                                        break;
+                                    case 'p': // get PPM Channels
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'P', DataStorage.ppmarray.getAsInt());
+                                        break;
+                                    case 'q':// "Get"-Anforderung für Settings
+                                        int para = RxdBuffer[pRxData];
+                                        if (para == 0xFF) {
+                                            para = DataStorage.activeParamset;
+                                        }
 
-                                    if (para > 5) {
-                                        para = 5;
-                                    }
-                                    //System.out.println(" setting from FC " + para);
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'Q', DataStorage.paramset[para - 1].getAsInt());
-                                    break;
-                                case 's': // Parametersatz speichern
+                                        if (para > 5) {
+                                            para = 5;
+                                        }
+                                        //System.out.println(" setting from FC " + para);
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'Q', DataStorage.paramset[para - 1].getAsInt());
+                                        break;
+                                    case 's': // Parametersatz speichern
 //                                    System.out.println(" setting to FC ");
-                                    if (1 <= RxdBuffer[pRxData] && RxdBuffer[pRxData] <= 5) {
-                                        tempchar = RxdBuffer[pRxData];
+                                        if (1 <= RxdBuffer[pRxData] && RxdBuffer[pRxData] <= 5) {
+                                            tempchar = RxdBuffer[pRxData];
 
-                                        DataStorage.activeParamset = tempchar;
-                                        System.out.println("Set active setting to " + tempchar);
-                                        //tempchar1 = GetActiveParamSet();
+                                            DataStorage.activeParamset = tempchar;
+                                            System.out.println("Set active setting to " + tempchar);
+                                            //tempchar1 = GetActiveParamSet();
 //                                        System.out.println(RxDataLen + " RxDataLen");
 //                                        for (int i : RxdBuffer) {
 //                                            System.out.print(i + ": " + ((char)i) + "  ");
 //                                        }
 //                                        System.out.println();
-                                        DataStorage.paramset[tempchar - 1].loadFromInt(RxdBuffer, pRxData + 1);
-                                    } else {
-                                        tempchar = 0;
+                                            DataStorage.paramset[tempchar - 1].loadFromInt(RxdBuffer, pRxData + 1);
+                                        }
+                                        else {
+                                            tempchar = 0;
+                                        }
+                                        //SendOutData('S', FC_ADDRESS, 1, &tempchar1, sizeof(tempchar1));
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'S', new int[]{tempchar});
+                                        break;
+                                    case 'f': // auf anderen Parametersatz umschalten
+                                    {
+                                        tempchar = RxdBuffer[pRxData];
+                                        System.out.println("Set active setting to " + tempchar);
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'F', new int[]{tempchar});
                                     }
-                                    //SendOutData('S', FC_ADDRESS, 1, &tempchar1, sizeof(tempchar1));
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'S', new int[]{tempchar});
                                     break;
-                                case 'f': // auf anderen Parametersatz umschalten
-                                {
-                                    tempchar = RxdBuffer[pRxData];
-                                    System.out.println("Set active setting to " + tempchar);
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'F', new int[]{tempchar});
-                                }
-                                break;
-                                case 'y':// serial Potis
+                                    case 'y':// serial Potis
 //                                    PPM_in[13] = (signed char) pRxData[0]; PPM_in[14] = (signed char) pRxData[1]; PPM_in[15] = (signed char) pRxData[2]; PPM_in[16] = (signed char) pRxData[3];
 //                                    PPM_in[17] = (signed char) pRxData[4]; PPM_in[18] = (signed char) pRxData[5]; PPM_in[19] = (signed char) pRxData[6]; PPM_in[20] = (signed char) pRxData[7];
 //                                    PPM_in[21] = (signed char) pRxData[8]; PPM_in[22] = (signed char) pRxData[9]; PPM_in[23] = (signed char) pRxData[10]; PPM_in[24] = (signed char) pRxData[11];
-                                    s8 tempVal = new s8("temp");
-                                    for (int i = 0; i < 12; i++) {
-                                        tempVal.loadFromInt(RxdBuffer, pRxData + i);
+                                        s8 tempVal = new s8("temp");
+                                        for (int i = 0; i < 12; i++) {
+                                            tempVal.loadFromInt(RxdBuffer, pRxData + i);
 //                                        System.out.println("serial Poti value: " + tempVal.value);
-                                        DataStorage.ppmarray.PPMArray[13 + i].setValue(tempVal.value, false);
-                                    }
-                                    break;
-                                case 'u': // request BL parameter
-                                    break;
-                                case 'w': // write BL parameter
-                                    break;
-                            }
-                        default:
-                            switch (RxdBuffer[2]) {
-                                // 't' comand placed here only for compatibility to BL
-                                case 't':// Motortest
-                                    break;
-                                // 'K' comand placed here only for compatibility to old MK3MAG software, that does not send the right Slave Address
-                                case 'K':// Kompasswert
-                                    break;
-                                case 'a':// Texte der Analogwerte
-                                    int index = RxdBuffer[pRxData];
-                                    if (index > 31) {
-                                        index = 31;
-                                    }
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'A', DataStorage.FCDebugOut.Analog[index].getLabelArray());
-                                    break;
-                                case 'b': // ExternControl
-                                    break;
-                                case 'c': // request for 3D data;
-                                    if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
-                                    }
-                                    break;
-                                case 'd': // Poll the debug data
-                                    if ((DataStorage.FCDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
-                                    }
-                                    break;
-                                case 'h':// x-1 Displayzeilen
-                                    if ((DataStorage.lcddata.requestTime = RxdBuffer[pRxData + 1] * 10) > 0) {
-                                        DataStorage.encoder.send_command(FC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
-                                    }
-                                    break;
-                                case 'l':// x-1 Displayzeilen
-                                    break;
-                                case 'v': // Version-Anforderung und Ausbaustufe
-                                    DataStorage.encoder.send_command(FC_ADDRESS, 'V', DataStorage.FCversion.getAsInt());
-                                    break;
-                                case 'g'://
-                                    //GetExternalControl = 1;
-                                    break;
-                                default:
-                                    //unsupported command received
-                                    break;
-                            }
-                    }
-                    break;
-                case MK3MAG:
-                    switch (RxdBuffer[1] - 'a') {
-                        //case Serial.MK3MAG_ADDRESS:
-                        default:
-                            switch (RxdBuffer[2]) {
-                                case 'v': // request for version info
-                                    DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'V', DataStorage.MK3version.getAsInt());
-                                    break;
-                                case 'a':// Texte der Analogwerte
-                                    int index = RxdBuffer[pRxData];
-                                    if (index > 31) {
-                                        index = 31;
-                                    }
-                                    DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'A', DataStorage.MK3MAGDebugOut.Analog[index].getLabelArray());
-                                    break;
-                                case 'd': // Poll the debug data
-                                    if ((DataStorage.MK3MAGDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
-                                        DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'D', DataStorage.MK3MAGDebugOut.getAsInt());
-                                    }
-                                    break;
-                            }
-                    }
-                    break;
-                case MKGPS:
-                    break;
+                                            DataStorage.ppmarray.PPMArray[13 + i].setValue(tempVal.value, false);
+                                        }
+                                        break;
+                                    case 'u': // request BL parameter
+                                        break;
+                                    case 'w': // write BL parameter
+                                        break;
+                                }
+                            default:
+                                switch (RxdBuffer[2]) {
+                                    // 't' comand placed here only for compatibility to BL
+                                    case 't':// Motortest
+                                        break;
+                                    // 'K' comand placed here only for compatibility to old MK3MAG software, that does not send the right Slave Address
+                                    case 'K':// Kompasswert
+                                        break;
+                                    case 'a':// Texte der Analogwerte
+                                        int index = RxdBuffer[pRxData];
+                                        if (index > 31) {
+                                            index = 31;
+                                        }
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'A', DataStorage.FCDebugOut.Analog[index].getLabelArray());
+                                        break;
+                                    case 'b': // ExternControl
+                                        break;
+                                    case 'c': // request for 3D data;
+                                        if ((DataStorage.str_Data3D.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(FC_ADDRESS, 'C', DataStorage.str_Data3D.getAsInt());
+                                        }
+                                        break;
+                                    case 'd': // Poll the debug data
+                                        if ((DataStorage.FCDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(FC_ADDRESS, 'D', DataStorage.FCDebugOut.getAsInt());
+                                        }
+                                        break;
+                                    case 'h':// x-1 Displayzeilen
+                                        if ((DataStorage.lcddata.requestTime = RxdBuffer[pRxData + 1] * 10) > 0) {
+                                            DataStorage.encoder.send_command(FC_ADDRESS, 'H', DataStorage.lcddata.getAsInt());
+                                        }
+                                        break;
+                                    case 'l':// x-1 Displayzeilen
+                                        break;
+                                    case 'v': // Version-Anforderung und Ausbaustufe
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'V', DataStorage.FCversion.getAsInt());
+                                        break;
+                                    case 'g'://
+                                        //GetExternalControl = 1;
+                                        break;
+                                    default:
+                                        //unsupported command received
+                                        break;
+                                }
+                        }
+                        break;
+                    case MK3MAG:
+                        switch (RxdBuffer[1] - 'a') {
+                            //case Serial.MK3MAG_ADDRESS:
+                            default:
+                                switch (RxdBuffer[2]) {
+                                    case 'v': // request for version info
+                                        DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'V', DataStorage.MK3version.getAsInt());
+                                        break;
+                                    case 'a':// Texte der Analogwerte
+                                        int index = RxdBuffer[pRxData];
+                                        if (index > 31) {
+                                            index = 31;
+                                        }
+                                        DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'A', DataStorage.MK3MAGDebugOut.Analog[index].getLabelArray());
+                                        break;
+                                    case 'd': // Poll the debug data
+                                        if ((DataStorage.MK3MAGDebugOut.requestTime = RxdBuffer[pRxData] * 10) > 0) {
+                                            DataStorage.encoder.send_command(MK3MAG_ADDRESS, 'D', DataStorage.MK3MAGDebugOut.getAsInt());
+                                        }
+                                        break;
+                                }
+                        }
+                        break;
+                    case MKGPS:
+                        break;
 
-                default:
-                    System.out.println("Unknown Address : " + (char) RxdBuffer[2]);
-                    break;
+                    default:
+                        System.out.println("Unknown Address : " + (char) RxdBuffer[2]);
+                        break;
+                }
+
             }
-
+        }
+        catch (Exception ex) {
+            System.out.println("Exception while getting the MK data");
+            System.out.println(ex);
         }
         NeuerDatensatzEmpfangen = false;
         pRxData = 0;

@@ -9,6 +9,7 @@
 package de.mylifesucks.oss.ncsimulator.protocol;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
 import java.io.*;
 import java.net.*;
 
@@ -98,9 +99,14 @@ public class TcpComm extends CommunicationBase implements Runnable {
                             //&& readBuffer[foo + 2] != 0x55
                             && readBuffer[foo + 3] != 0xAA //&& readBuffer[foo + 4] != 0x00
                             ) {
+                        if (LogPanel.showInput.isSelected()) {
+                            LogPanel.giveMessage("back to NC debug", LogPanel.green);
+                        }
+
                         DataStorage.setUART(DataStorage.UART_CONNECTION.NC);
                         UartState = 0;
-                    } else {
+                    }
+                    else {
 
                         for (int i = 0; i < numBytes; i++) {
                             USART0_RX_vect((char) readBuffer[i]);

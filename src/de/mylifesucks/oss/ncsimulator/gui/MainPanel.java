@@ -47,6 +47,7 @@ public class MainPanel extends JPanel {
     CoordVizualizer cv;
     JTabbedPane tabbed;
     public JCheckBox isUSB;
+    public JCheckBox hasNC;
     public static final String requestOSD = "Request the NC-OSD dataset";
     public static final String stopOSD = "Stop requesting the NC-OSD dataset";
     public static final String requestDEBUG = "Request the FC-Debug dataset";
@@ -216,7 +217,22 @@ public class MainPanel extends JPanel {
                 }
             }
         });
+        
         center.add(requestButton);
+        center.add(Box.createHorizontalGlue());
+        configBox.add(center);
+
+        center = Box.createHorizontalBox();
+        center.add(Box.createHorizontalGlue());
+        hasNC = new JCheckBox("Has NaviCtrl?",DataStorage.hasNC);
+        
+
+        hasNC.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                DataStorage.hasNC = hasNC.isSelected();
+            }
+        });
+        center.add(hasNC);
         center.add(Box.createHorizontalGlue());
         configBox.add(center);
 

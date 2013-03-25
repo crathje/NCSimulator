@@ -10,12 +10,10 @@ package de.mylifesucks.oss.ncsimulator.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -38,7 +36,9 @@ public class LogPanel extends JPanel {
     public static MutableAttributeSet red = new SimpleAttributeSet();
     public static MutableAttributeSet green = new SimpleAttributeSet();
     public static JCheckBox cb;
-
+    public static JCheckBox showInput;
+    public static JCheckBox showOutput;
+    
     public LogPanel() {
         setBorder(new BevelBorder(BevelBorder.LOWERED));
         setLayout(new BorderLayout());
@@ -49,8 +49,25 @@ public class LogPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel checkBoxPanel = new JPanel(new FlowLayout());
+        showInput = new JCheckBox("Show Input");
+        checkBoxPanel.add(showInput);
+        showOutput = new JCheckBox("Show Output");
+        checkBoxPanel.add(showOutput);
         cb = new JCheckBox("log?");
         checkBoxPanel.add(cb);
+        final JButton clearButton = new JButton("Clear");
+        
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    documentModel.remove(0,documentModel.getLength());
+                }
+                catch (BadLocationException ble) {
+                    System.out.println("Bad location for text insert on logpanel.");
+                }
+            }
+        });
+        checkBoxPanel.add(clearButton);
 
         add(checkBoxPanel, BorderLayout.SOUTH);
 
