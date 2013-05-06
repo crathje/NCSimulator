@@ -61,8 +61,7 @@ public class CommunicationBase {
             CrcOkay = false;
             if ((crc1 == RxdBuffer[buf_ptr - 2]) && (crc2 == RxdBuffer[buf_ptr - 1])) {
                 CrcOkay = true;
-            }
-            else {
+            } else {
                 CrcOkay = false;
 
             }
@@ -73,27 +72,26 @@ public class CommunicationBase {
                 RxdBuffer[buf_ptr] = '\r';
 
                 /*if (RxdBuffer[2] == 'R') {
-                 LcdClear();
-                 wdt_enable(WDTO_250MS); // Reset-Commando
-                 ServoActive = 0;
+                LcdClear();
+                wdt_enable(WDTO_250MS); // Reset-Commando
+                ServoActive = 0;
                 
-                 }*/
+                }*/
 
                 final int RxdBuffer_work[] = new int[MAX_EMPFANGS_BUFF];
                 System.arraycopy(RxdBuffer, 0, RxdBuffer_work, 0, RxdBuffer.length);
                 // thread away the data handling 
                 DataStorage.executors.submit(new Runnable() {
+
                     public void run() {
 
                         BearbeiteRxDaten(RxdBuffer_work);
                     }
                 });
-            }
-            else {
+            } else {
 //                System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen + " CrcOkay: " + CrcOkay);
             }
-        }
-        else {
+        } else {
             switch (UartState) {
                 case 0:
                     if (SioTmp == '#' && !NeuerDatensatzEmpfangen) {
@@ -112,8 +110,7 @@ public class CommunicationBase {
                     RxdBuffer[buf_ptr] = SioTmp;
                     if (buf_ptr < MAX_EMPFANGS_BUFF) {
                         buf_ptr++;
-                    }
-                    else {
+                    } else {
                         UartState = 0;
                     }
                     crc += SioTmp;
@@ -145,8 +142,7 @@ public class CommunicationBase {
                 b = RxdBuffer[ptrIn++] - '=';
                 c = RxdBuffer[ptrIn++] - '=';
                 d = RxdBuffer[ptrIn++] - '=';
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
             }
 
             x = (a << 2) | (b >> 4);
@@ -155,20 +151,17 @@ public class CommunicationBase {
 
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = x;
-            }
-            else {
+            } else {
                 break;
             }
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = y;
-            }
-            else {
+            } else {
                 break;
             }
             if ((len--) != 0) {
                 RxdBuffer[ptrOut++] = z;
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -190,9 +183,10 @@ public class CommunicationBase {
             out += (char) RxdBuffer[i];
         }
 //        System.out.println(out);
-        
-        if(LogPanel.showInput.isSelected())
+
+        if (LogPanel.showInput.isSelected()) {
             LogPanel.giveMessage(out, LogPanel.green);
+        }
 
 //        int i = 0;
 //        while (i < AnzahlEmpfangsBytes) {
@@ -245,6 +239,11 @@ public class CommunicationBase {
                                     case 's'://  new target position
                                         System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " new target position");
                                         break;
+                                    case 't'://  SystemTime
+                                        // force current date
+                                        DataStorage.SystemTime.set(Calendar.getInstance());
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'T', DataStorage.SystemTime.getAsInt());
+                                        break;
                                     case 'u': // redirect debug uart
                                         switch (RxdBuffer[pRxData]) {
                                             case 0:
@@ -273,15 +272,13 @@ public class CommunicationBase {
                                             System.out.println("Clear WP");
                                             DataStorage.clearWP();
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
-                                        }
-                                        else {
+                                        } else {
                                             System.out.println("Set WP " + rec.Index.value);
 
                                             if (rec.Index.value > 32) {
                                                 System.out.println("Invalid index " + rec.Index.value);
                                                 rec.Index.value = 254;
-                                            }
-                                            else {
+                                            } else {
                                                 DataStorage.waypointList[(int) (rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
                                             }
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
@@ -294,8 +291,7 @@ public class CommunicationBase {
                                         System.out.println("Read index " + index);
                                         if (index <= DataStorage.waypointList.length) {
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.length, index}, DataStorage.waypointList[index - 1].getAsInt()));
-                                        }
-                                        else {
+                                        } else {
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.length});
                                         }
                                         break;
@@ -417,8 +413,7 @@ public class CommunicationBase {
 //                                        }
 //                                        System.out.println();
                                             DataStorage.paramset[tempchar - 1].loadFromInt(RxdBuffer, pRxData + 1);
-                                        }
-                                        else {
+                                        } else {
                                             tempchar = 0;
                                         }
                                         //SendOutData('S', FC_ADDRESS, 1, &tempchar1, sizeof(tempchar1));
@@ -525,8 +520,7 @@ public class CommunicationBase {
                 }
 
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Exception while getting the MK data");
             System.out.println(ex);
         }

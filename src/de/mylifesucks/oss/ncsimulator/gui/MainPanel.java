@@ -460,6 +460,13 @@ public class MainPanel extends JPanel {
         JScrollPane debugNCScrollpane = new JScrollPane(debugNCValPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("NC Debug", debugNCScrollpane);
 
+        JPanel timePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints timePanelgbc = new GridBagConstraints();
+        timePanelgbc.gridy++;
+        DataStorage.SystemTime.addToPanel(timePanel, timePanelgbc);
+        JScrollPane timePanelgbcScrollpane = new JScrollPane(timePanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("Time", timePanelgbcScrollpane);
+
 
         JTabbedPane paramPanel = new JTabbedPane();
         for (int i = 0; i

@@ -10,6 +10,7 @@ package de.mylifesucks.oss.ncsimulator.datastorage;
 
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Data3D_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.DateTime_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.str_Data3D;
 import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
@@ -76,6 +77,7 @@ public class DataStorage {
     public static BLData_t bldata_t[] = new BLData_t[12];
     public static Preferences preferences;
     public static Encode encoder;
+    public static DateTime_t SystemTime = new DateTime_t();
     public static CommunicationBase serial;
     private static DataStorage instance = new DataStorage();
     private static LinkedList<c_int> serializePool;

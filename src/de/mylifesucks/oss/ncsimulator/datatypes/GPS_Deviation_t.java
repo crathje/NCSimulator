@@ -7,6 +7,7 @@
  */
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
+import java.util.LinkedList;
 
 /**
  * Struct to put the deviations somewhere
@@ -23,11 +24,18 @@ public class GPS_Deviation_t extends c_int {
     public s32 Distance;	// in cm
 
     public GPS_Deviation_t() {
+        super();
         Status = new u8("temp");
         North = new s32("temp");
         East = new s32("temp");
         Bearing = new s32("temp");
         Distance = new s32("temp");
 
+        allAttribs = new LinkedList<c_int>();
+        allAttribs.add(Status);
+        allAttribs.add(North);
+        allAttribs.add(East);
+        allAttribs.add(Bearing);
+        allAttribs.add(Distance);
     }
 };
