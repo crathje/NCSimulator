@@ -17,7 +17,7 @@ import java.util.LinkedList;
  */
 public class paramset_t extends c_int {
 
-    int EEPARAM_REVISION = 92;
+    int EEPARAM_REVISION = 95;
     //GlobalConfig3
     int CFG3_NO_SDCARD_NO_START = 0x01;
     int CFG3_DPH_MAX_RADIUS = 0x02;
@@ -78,7 +78,7 @@ public class paramset_t extends c_int {
     u8Flags GlobalConfig;// 0x01;
     u8 Hoehe_MinGas;// Wert : 0-100
     u8 Luftdruck_D;// Wert : 0-250
-    u8 MaxHoehe;// Wert : 0-32
+    u8 HoeheChannel;// Wert : 0-32
     u8 Hoehe_P;// Wert : 0-32
     u8 Hoehe_Verstaerkung;// Wert : 0-50
     u8 Hoehe_ACC_Wirkung;// Wert : 0-250
@@ -147,9 +147,8 @@ public class paramset_t extends c_int {
     u8 WARN_J16_Bitmask;// for the J16 Output
     u8 WARN_J17_Bitmask;// for the J17 Output
     //---NaviCtrl---------------------------------------------
-    
     u8 NaviOut1Parameter;// Parameters for the Naviboard
-    u8 NaviGpsModeControl;// Parameters for the Naviboard
+    u8 NaviGpsModeChannel;// Parameters for the Naviboard
     u8 NaviGpsGain;
     u8 NaviGpsP;
     u8 NaviGpsI;
@@ -157,7 +156,7 @@ public class paramset_t extends c_int {
     u8 NaviGpsPLimit;
     u8 NaviGpsILimit;
     u8 NaviGpsDLimit;
-    u8 NaviGpsACC;
+    u8 NaviGpsA;
     u8 NaviGpsMinSat;
     u8 NaviStickThreshold;
     u8 NaviWindCorrection;
@@ -169,7 +168,7 @@ public class paramset_t extends c_int {
     u8 ExternalControl;// for serial Control
     //---CareFree---------------------------------------------
     u8 OrientationAngle;// Where is the front-direction?
-    u8 CareFreeModeControl;// switch for CareFree
+    u8 CareFreeChannel;// switch for CareFree
     u8 MotorSafetySwitch;
     u8 MotorSmooth;
     u8 ComingHomeAltitude;
@@ -178,6 +177,8 @@ public class paramset_t extends c_int {
     u8 FailsafeChannel;
     u8 ServoFilterNick;
     u8 ServoFilterRoll;
+    u8 StartLandChannel;
+    u8 LandingSpeed;
     //------------------------------------------------
     u8Flags BitConfig;// (war Loop-Cfg) Bitcodiert: 0x01;/ wird getrennt behandelt
     u8Flags ServoCompInvert;// //  0x01 ;// WICHTIG!!! am Ende lassen
@@ -245,7 +246,7 @@ public class paramset_t extends c_int {
         KompassWirkung.setValue(64, false);    // Wert : 0-247
 
         Hoehe_MinGas.setValue(30, false);
-        MaxHoehe.setValue(255, false);         // Wert : 0-247   255 -> Poti1
+        HoeheChannel.setValue(255, false);         // Wert : 0-247   255 -> Poti1
         Hoehe_P.setValue(15, false);          // Wert : 0-32
         Luftdruck_D.setValue(30, false);          // Wert : 0-247
         Hoehe_ACC_Wirkung.setValue(0, false);     // Wert : 0-247
@@ -292,7 +293,7 @@ public class paramset_t extends c_int {
         BitConfig.setValue(0, false);              // Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
 
         NaviOut1Parameter.setValue(0, false); // Photo release in meter
-        NaviGpsModeControl.setValue(254, false); // 254 -> Poti 2
+        NaviGpsModeChannel.setValue(254, false); // 254 -> Poti 2
         NaviGpsGain.setValue(100, false);
         NaviGpsP.setValue(90, false);
         NaviGpsI.setValue(90, false);
@@ -300,7 +301,7 @@ public class paramset_t extends c_int {
         NaviGpsPLimit.setValue(75, false);
         NaviGpsILimit.setValue(85, false);
         NaviGpsDLimit.setValue(75, false);
-        NaviGpsACC.setValue(0, false);
+        NaviGpsA.setValue(0, false);
         NaviGpsMinSat.setValue(6, false);
         NaviStickThreshold.setValue(8, false);
         NaviWindCorrection.setValue(90, false);
@@ -309,7 +310,7 @@ public class paramset_t extends c_int {
         NaviAngleLimitation.setValue(140, false);
         NaviPH_LoginTime.setValue(5, false);
         OrientationAngle.setValue(0, false);
-        CareFreeModeControl.setValue(0, false);
+        CareFreeChannel.setValue(0, false);
         UnterspannungsWarnung.setValue(33, false); // Wert : 0-247 ( Automatische Zellenerkennung bei < 50)
         NotGas.setValue(45, false);                // Wert : 0-247     // Gaswert bei Empangsverlust
         NotGasZeit.setValue(90, false);            // Wert : 0-247     // Zeit bis auf NotGas geschaltet wird, wg. Rx-Problemen
@@ -319,6 +320,8 @@ public class paramset_t extends c_int {
         MaxAltitude.setValue(150, false);           // 0.value = off
         AchsKopplung1.setValue(90, false);
         AchsKopplung2.setValue(55, false);
+        StartLandChannel.setValue(0, false);
+        LandingSpeed.setValue(12, false);
     }
     /*
      void ParamSet_DefaultSet1(void) // sport
@@ -430,7 +433,7 @@ public class paramset_t extends c_int {
         GlobalConfig = new u8Flags(index + " GlobalConfig", new String[]{"HOEHENREGELUNG", "HOEHEN_SCHALTER ", "HEADING_HOLD ", "KOMPASS_AKTIV ", "KOMPASS_FIX;", "GPS_AKTIV", "ACHSENKOPPLUNG_AKTIV", "DREHRATEN_BEGRENZER"});           // 0x01=Höhenregler aktiv,0x02=Kompass aktiv, 0x04=GPS aktiv, 0x08=Heading Hold aktiv
         Hoehe_MinGas = new u8(index + " Hoehe_MinGas");           // Wert : 0-100
         Luftdruck_D = new u8(index + " Luftdruck_D");            // Wert : 0-250
-        MaxHoehe = new u8(index + " MaxHoehe");               // Wert : 0-32
+        HoeheChannel = new u8(index + " HoeheChannel");               // Wert : 0-32
         Hoehe_P = new u8(index + " Hoehe_P");                // Wert : 0-32
         Hoehe_Verstaerkung = new u8(index + " Hoehe_Verstaerkung");     // Wert : 0-50
         Hoehe_ACC_Wirkung = new u8(index + " Hoehe_ACC_Wirkung");      // Wert : 0-250
@@ -500,7 +503,7 @@ public class paramset_t extends c_int {
         WARN_J17_Bitmask = new u8(index + " WARN_J17_Bitmask");       // for the J17 Output
         //---NaviCtrl---------------------------------------------
         NaviOut1Parameter = new u8(index + " NaviOut1Parameter");     // Parameters for the Naviboard
-        NaviGpsModeControl = new u8(index + " NaviGpsModeControl");     // Parameters for the Naviboard
+        NaviGpsModeChannel = new u8(index + " NaviGpsModeChannel");     // Parameters for the Naviboard
         NaviGpsGain = new u8(index + " NaviGpsGain");
         NaviGpsP = new u8(index + " NaviGpsP");
         NaviGpsI = new u8(index + " NaviGpsI");
@@ -508,7 +511,7 @@ public class paramset_t extends c_int {
         NaviGpsPLimit = new u8(index + " NaviGpsPLimit");
         NaviGpsILimit = new u8(index + " NaviGpsILimit");
         NaviGpsDLimit = new u8(index + " NaviGpsDLimit");
-        NaviGpsACC = new u8(index + " NaviGpsACC");
+        NaviGpsA = new u8(index + " NaviGpsA");
         NaviGpsMinSat = new u8(index + " NaviGpsMinSat");
         NaviStickThreshold = new u8(index + " NaviStickThreshold");
         NaviWindCorrection = new u8(index + " NaviWindCorrection");
@@ -520,7 +523,7 @@ public class paramset_t extends c_int {
         ExternalControl = new u8(index + " ExternalControl");         // for serial Control
         //---CareFree---------------------------------------------
         OrientationAngle = new u8(index + " OrientationAngle");        // Where is the front-direction?
-        CareFreeModeControl = new u8(index + " OrientationModeControl");  // switch for CareFree
+        CareFreeChannel = new u8(index + " CareFreeChannel");  // switch for CareFree
         MotorSafetySwitch = new u8(index + "MotorSafetySwitch");
         MotorSmooth = new u8(index + "MotorSmooth");
         ComingHomeAltitude = new u8(index + "ComingHomeAltitude");
@@ -529,15 +532,16 @@ public class paramset_t extends c_int {
         FailsafeChannel = new u8(index + "FailsafeChannel");
         ServoFilterNick = new u8(index + "ServoFilterNick");
         ServoFilterRoll = new u8(index + "ServoFilterRoll");
-
+        StartLandChannel = new u8(index + "StartLandChannel");
+        LandingSpeed = new u8(index + "LandingSpeed");
         //------------------------------------------------
         BitConfig = new u8Flags(index + " BitConfig", new String[]{"UP", "DOWN", "LEFT", "RIGHT", "MOTOR_BLINK1", "MOTOR_OFF_LED1", "MOTOR_OFF_LED2", "MOTOR_BLINK1"});          // (war Loop-Cfg) Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
-        ServoCompInvert = new u8Flags(index + " ServoCompInvert", new String[]{"SERVO_NICK_INV", "SERVO_ROLL_INV", "SERVO_RELATIVE", "", "","", "", ""}); 
+        ServoCompInvert = new u8Flags(index + " ServoCompInvert", new String[]{"SERVO_NICK_INV", "SERVO_ROLL_INV", "SERVO_RELATIVE", "", "", "", "", ""});
 
         ExtraConfig = new u8Flags(index + " ExtraConfig", new String[]{"HEIGHT_LIMIT", "VARIO_BEEP", "SENSITIVE_RC", "3_3V_REFERENCE", "NO_RCOFF_BEEPING", "GPS_AID", "LEARNABLE_CAREFREE", "IGNORE_MAG_ERR_AT_STARTUP"});        // bitcodiert
-        GlobalConfig3 = new u8Flags(index + " GlobalConfig3", new String[]{"NO_SDCARD_NO_START", "DPH_MAX_RADIUS", "VARIO_FAILSAFE", "MOTOR_SWITCH_MODE", "NO_GPSFIX_NO_START","USE_NC_FOR_OUT1", "SPEAK_ALL", ""});        // bitcodiert
-      
-        
+        GlobalConfig3 = new u8Flags(index + " GlobalConfig3", new String[]{"NO_SDCARD_NO_START", "DPH_MAX_RADIUS", "VARIO_FAILSAFE", "MOTOR_SWITCH_MODE", "NO_GPSFIX_NO_START", "USE_NC_FOR_OUT1", "SPEAK_ALL", ""});        // bitcodiert
+
+
         Name = new c_string(index + " Name", 12, "Setting " + index);
         crc = new u8(index + " crc");
 
@@ -569,7 +573,7 @@ public class paramset_t extends c_int {
         allAttribs.add(GlobalConfig);
         allAttribs.add(Hoehe_MinGas);
         allAttribs.add(Luftdruck_D);
-        allAttribs.add(MaxHoehe);
+        allAttribs.add(HoeheChannel);
         allAttribs.add(Hoehe_P);
         allAttribs.add(Hoehe_Verstaerkung);
         allAttribs.add(Hoehe_ACC_Wirkung);
@@ -635,7 +639,7 @@ public class paramset_t extends c_int {
         allAttribs.add(WARN_J16_Bitmask);
         allAttribs.add(WARN_J17_Bitmask);
         allAttribs.add(NaviOut1Parameter);
-        allAttribs.add(NaviGpsModeControl);
+        allAttribs.add(NaviGpsModeChannel);
         allAttribs.add(NaviGpsGain);
         allAttribs.add(NaviGpsP);
         allAttribs.add(NaviGpsI);
@@ -643,7 +647,7 @@ public class paramset_t extends c_int {
         allAttribs.add(NaviGpsPLimit);
         allAttribs.add(NaviGpsILimit);
         allAttribs.add(NaviGpsDLimit);
-        allAttribs.add(NaviGpsACC);
+        allAttribs.add(NaviGpsA);
         allAttribs.add(NaviGpsMinSat);
         allAttribs.add(NaviStickThreshold);
         allAttribs.add(NaviWindCorrection);
@@ -655,7 +659,7 @@ public class paramset_t extends c_int {
         allAttribs.add(ExternalControl);
 
         allAttribs.add(OrientationAngle);
-        allAttribs.add(CareFreeModeControl);
+        allAttribs.add(CareFreeChannel);
         allAttribs.add(MotorSafetySwitch);
         allAttribs.add(MotorSmooth);
         allAttribs.add(ComingHomeAltitude);
@@ -664,6 +668,8 @@ public class paramset_t extends c_int {
         allAttribs.add(FailsafeChannel);
         allAttribs.add(ServoFilterNick);
         allAttribs.add(ServoFilterRoll);
+        allAttribs.add(StartLandChannel);
+        allAttribs.add(LandingSpeed);
 
         allAttribs.add(BitConfig);
         allAttribs.add(ServoCompInvert);
