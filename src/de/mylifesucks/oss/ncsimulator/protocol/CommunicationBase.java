@@ -72,17 +72,16 @@ public class CommunicationBase {
                 RxdBuffer[buf_ptr] = '\r';
 
                 /*if (RxdBuffer[2] == 'R') {
-                LcdClear();
-                wdt_enable(WDTO_250MS); // Reset-Commando
-                ServoActive = 0;
+                 LcdClear();
+                 wdt_enable(WDTO_250MS); // Reset-Commando
+                 ServoActive = 0;
                 
-                }*/
+                 }*/
 
                 final int RxdBuffer_work[] = new int[MAX_EMPFANGS_BUFF];
                 System.arraycopy(RxdBuffer, 0, RxdBuffer_work, 0, RxdBuffer.length);
                 // thread away the data handling 
                 DataStorage.executors.submit(new Runnable() {
-
                     public void run() {
 
                         BearbeiteRxDaten(RxdBuffer_work);
@@ -383,6 +382,8 @@ public class CommunicationBase {
                                         DataStorage.encoder.send_command(FC_ADDRESS, 'N', DataStorage.mixerset.getAsInt());
                                         break;
                                     case 'm':// "Write Mixer
+                                        tempchar = 1;
+                                        DataStorage.encoder.send_command(FC_ADDRESS, 'M', new int[]{tempchar});
                                         break;
                                     case 'p': // get PPM Channels
                                         DataStorage.encoder.send_command(FC_ADDRESS, 'P', DataStorage.ppmarray.getAsInt());
