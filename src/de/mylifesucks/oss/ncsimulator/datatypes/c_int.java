@@ -44,8 +44,8 @@ public abstract class c_int extends Observable {
     JTextField valueField;
     public JComponent nameLabel = null;
     public LinkedList<c_int> allAttribs = null;
-    protected Integer minValue;
-    protected Integer maxValue;
+    public Integer minValue;
+    public Integer maxValue;
 
     public LinkedList<c_int> getList() {
         LinkedList<c_int> poss = new LinkedList<c_int>();

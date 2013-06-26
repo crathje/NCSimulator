@@ -17,12 +17,15 @@ import java.util.LinkedList;
  */
 public class PPMArray extends c_int {
 
-    public s16 PPMArray[] = new s16[26];
+    // 16ch + 12ser + 3stages + 4 reserved
+    public s16 PPMArray[] = new s16[16+12+3+4];
 
     public PPMArray() {
         allAttribs = new LinkedList<c_int>();
         for (int i = 0; i < PPMArray.length; i++) {
             s16 c = new s16("Kanal " + i);
+            c.minValue=-127;
+            c.maxValue=128;
             PPMArray[i] = c;
             allAttribs.add(c);
         }
