@@ -19,11 +19,12 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
 import de.mylifesucks.oss.ncsimulator.protocol.TcpComm;
-import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,6 +34,7 @@ import javax.swing.text.PlainDocument;
 
 /**
  * The main Panel
+ *
  * @author Claas Anders "CaScAdE" Rathje
  */
 public class MainPanel extends JPanel {
@@ -160,7 +162,6 @@ public class MainPanel extends JPanel {
         });
 
 
-
         center.add(startTcp);
         center.add(Box.createHorizontalGlue());
         configBox.add(center);
@@ -217,15 +218,15 @@ public class MainPanel extends JPanel {
                 }
             }
         });
-        
+
         center.add(requestButton);
         center.add(Box.createHorizontalGlue());
         configBox.add(center);
 
         center = Box.createHorizontalBox();
         center.add(Box.createHorizontalGlue());
-        hasNC = new JCheckBox("Has NaviCtrl?",DataStorage.hasNC);
-        
+        hasNC = new JCheckBox("Has NaviCtrl?", DataStorage.hasNC);
+
 
         hasNC.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -296,7 +297,7 @@ public class MainPanel extends JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == delte) {
-                    DataStorage.deltePool();
+                    DataStorage.deletePool();
 
 
                 }
@@ -365,7 +366,7 @@ public class MainPanel extends JPanel {
         JScrollPane motorFCScrollpane = new JScrollPane(listPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("MotorData", motorFCScrollpane);*/
 
-        DataStorage.clearWP();
+        DataStorage.clearWPList();
 
         JPanel wpListPane = new JPanel();
         wpListPane.setLayout(new BoxLayout(wpListPane, BoxLayout.PAGE_AXIS));
@@ -452,7 +453,6 @@ public class MainPanel extends JPanel {
         tabbed.addTab("PPM", ppmArrayScrollpane);
 
 
-
         JPanel debugNCValPanel = new JPanel(new GridBagLayout());
         GridBagConstraints debugncgbc = new GridBagConstraints();
         debugncgbc.gridy++;
@@ -469,16 +469,13 @@ public class MainPanel extends JPanel {
 
 
         JTabbedPane paramPanel = new JTabbedPane();
-        for (int i = 0; i
-                < DataStorage.paramset.length; i++) {
+        for (int i = 0; i < DataStorage.paramset.length; i++) {
             JPanel setPanel = new JPanel(new GridBagLayout());
             GridBagConstraints paramgbc = new GridBagConstraints();
             paramgbc.gridy++;
             DataStorage.paramset[i].addToPanel(setPanel, paramgbc);
             JScrollPane paramScrPanel = new JScrollPane(setPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             paramPanel.add("Set " + DataStorage.paramset[i].index, paramScrPanel);
-
-
         }
         tabbed.addTab("Parameter", paramPanel);
 
@@ -499,14 +496,14 @@ public class MainPanel extends JPanel {
         tabbed.addTab("3D (NC)", val3dncScrollpane);
 
 
-        DataStorage.FCversion.SWMajor.value = 0;
-        DataStorage.FCversion.SWMinor.value = 84;
+        DataStorage.FCversion.SWMajor.value = 2;
+        DataStorage.FCversion.SWMinor.value = 0;
         DataStorage.FCversion.SWPatch.value = 0; // a
         DataStorage.FCversion.ProtoMajor.value = 11;
         DataStorage.FCversion.ProtoMinor.value = 0;
 
-        DataStorage.NCversion.SWMajor.value = 0;
-        DataStorage.NCversion.SWMinor.value = 24;
+        DataStorage.NCversion.SWMajor.value = 2;
+        DataStorage.NCversion.SWMinor.value = 0;
         DataStorage.NCversion.SWPatch.value = 1; // a
         DataStorage.NCversion.ProtoMajor.value = 11;
         DataStorage.NCversion.ProtoMinor.value = 0;
@@ -516,7 +513,6 @@ public class MainPanel extends JPanel {
         DataStorage.MK3version.SWPatch.value = 0;
         DataStorage.MK3version.ProtoMajor.value = 11;
         DataStorage.MK3version.ProtoMinor.value = 0;
-
 
 
         JPanel versionPanel = new JPanel(new GridBagLayout());
@@ -559,7 +555,6 @@ public class MainPanel extends JPanel {
 
         cv = DataStorage.coordVizualizer;
         tabbed.addTab("Coord Map", cv);
-
 
 
         JScrollPane dataWindowPanelgbcScroll = new JScrollPane(new DataWindowPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

@@ -3,4 +3,6 @@ bin
 dist
 private
 build
-
+out
+.idea
+*.iml

@@ -8,7 +8,6 @@
 package de.mylifesucks.oss.ncsimulator.protocol;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
-import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.datatypes.s8;
@@ -16,7 +15,7 @@ import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
 import java.io.*;
 import java.util.*;
 //import javax.comm.*;
-import gnu.io.*;
+
 
 /**
  *
@@ -263,35 +262,33 @@ public class CommunicationBase {
 
                                         Waypoint_t rec = new Waypoint_t("recieved WP");
                                         rec.loadFromInt(RxdBuffer, pRxData);
-
-
                                         System.out.println("recieved WP " + rec.Index.value);
 //
                                         if ((rec.Position.Status.value == Waypoint_t.INVALID) && (rec.Index.value == 0)) {
                                             System.out.println("Clear WP");
-                                            DataStorage.clearWP();
+                                            DataStorage.clearWPList();
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                         } else {
                                             System.out.println("Set WP " + rec.Index.value);
 
-                                            if (rec.Index.value > 32) {
+                                            if (rec.Index.value > DataStorage.MAX_WAYPOINTS) {
                                                 System.out.println("Invalid index " + rec.Index.value);
                                                 rec.Index.value = 254;
                                             } else {
                                                 DataStorage.waypointList[(int) (rec.Index.value - 1)].loadFromInt(RxdBuffer, pRxData);
+                                                DataStorage.updateWPCount();
                                             }
                                             DataStorage.encoder.send_command(NC_ADDRESS, 'W', new int[]{(int) rec.Index.value});
                                         }
-//                                    rec.printOut();
                                         break;
                                     case 'x'://  Read Waypoint from List
                                         System.out.println(DataStorage.UART.name() + ":" + (RxdBuffer[1] - 'a') + (char) RxdBuffer[2] + " Read Waypoint from List");
                                         int index = RxdBuffer[pRxData];
                                         System.out.println("Read index " + index);
-                                        if (index <= DataStorage.waypointList.length) {
-                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointList.length, index}, DataStorage.waypointList[index - 1].getAsInt()));
+                                        if (index <= DataStorage.waypointCount) {
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', c_int.concatArray(new int[]{DataStorage.waypointCount, index}, DataStorage.waypointList[index - 1].getAsInt()));
                                         } else {
-                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointList.length});
+                                            DataStorage.encoder.send_command(NC_ADDRESS, 'X', new int[]{DataStorage.waypointCount});
                                         }
                                         break;
                                     case 'j':// Set/Get NC-Parameter

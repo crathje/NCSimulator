@@ -14,6 +14,7 @@ import java.util.LinkedList;
 /**
  * Waypoint Data Struct
  * adapted from: http://svn.mikrokopter.de/filedetails.php?repname=NaviCtrl&path=/tags/V0.22a/waypoints.h
+ *
  * @author Frank Blumenberg
  */
 public class Waypoint_t extends c_int {
@@ -37,8 +38,11 @@ public class Waypoint_t extends c_int {
     public static final int POINT_TYPE_WP = 0;
     public static final int POINT_TYPE_POI = 1;
 
-//    public static Waypoint_t[] waypointList;
-    
+    public Waypoint_t(String prefix, int idx) {
+        this(prefix);
+        Index.value = idx;
+    }
+
     public Waypoint_t(String prefix) {
         super();
         name = prefix;
@@ -49,6 +53,7 @@ public class Waypoint_t extends c_int {
         HoldTime = new u8(prefix + " HoldTime");
         Event_Flag = new u8(prefix + " Event_Flag");
         Index = new u8(prefix + " Index");
+
         Type = new u8(prefix + " Type");
         WP_EventChannelValue = new u8(prefix + " WP_EventChannelValue");
         AltitudeRate = new u8(prefix + " AltitudeRate");
@@ -70,5 +75,20 @@ public class Waypoint_t extends c_int {
         allAttribs.add(Speed);
         allAttribs.add(CameraAngle);
         allAttribs.addAll(Arrays.asList(reserve));
+    }
+
+    public void clearData() {
+        Position.Status.value = Waypoint_t.INVALID;
+        Position.Latitude.value = 0;
+        Position.Longitude.value = 0;
+        Position.Altitude.value = 0;
+        Heading.value = 361;
+        ToleranceRadius.value = 0;
+        HoldTime.value = 0;
+        Type.value = Waypoint_t.POINT_TYPE_INVALID;
+        Event_Flag.value = 0;
+        AltitudeRate.value = 0;
+        Speed.value = 30;
+        CameraAngle.value = 0;
     }
 }

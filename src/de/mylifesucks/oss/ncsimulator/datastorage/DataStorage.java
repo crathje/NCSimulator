@@ -30,6 +30,7 @@ import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.protocol.Encode;
 import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.CommunicationBase;
+
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,7 +41,7 @@ import javax.swing.JTextField;
 
 /**
  * Singleton class to keep the data somewhere
- * 
+ *
  * @author Claas Anders "CaScAdE" Rathje
  */
 public class DataStorage {
@@ -55,6 +56,9 @@ public class DataStorage {
 
         FC, MK3MAG, MKGPS, NC
     }
+
+    public final static int MAX_WAYPOINTS = 32;
+
     public static ImageIcon iconHome;
     public static ImageIcon iconCurrent;
     public static ImageIcon iconTarget;
@@ -68,7 +72,9 @@ public class DataStorage {
     public static str_DebugOut MK3MAGDebugOut = new str_DebugOut("MK3MAG", CommunicationBase.MK3MAG_ADDRESS);
     public static paramset_t paramset[] = new paramset_t[5];
     public static int activeParamset = 3;
-    public static Waypoint_t waypointList[] = new Waypoint_t[250];
+    public static Waypoint_t waypointList[] = new Waypoint_t[MAX_WAYPOINTS];
+    public static int waypointCount;
+
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
@@ -90,7 +96,7 @@ public class DataStorage {
     public static final String nodeName = "NC Simulator";
     public static DataWindowPanel dataWindowPanel;
     public static int motorCounter = 0;
-    
+
     public static boolean hasNC = true;
 
     private DataStorage() {
@@ -116,51 +122,37 @@ public class DataStorage {
         }
 
 
-        if (waypointList == null || waypointList[0] == null) {
-            waypointList = new Waypoint_t[400];
-            for (int i = 0; i < waypointList.length; i++) {
-                waypointList[i] = getEmptyWP(i + 1);
-            }
+        if (waypointList == null)
+            waypointList = new Waypoint_t[256];
+
+        for (int i = 0; i < waypointList.length; i++) {
+            waypointList[i] = getEmptyWP(i + 1);
         }
 
+        waypointCount = 0;
     }
 
-    public static void clearWP() {
-        /*
-         * why clear bldata in clearWP???
-        for (int i = 0; i < bldata_t.length; i++) {
-            bldata_t[i] = new BLData_t(i);
+    public static void updateWPCount() {
+        waypointCount = 0;
+        for (int i = 0; i < waypointList.length && waypointList[i].Type.value != Waypoint_t.POINT_TYPE_INVALID; i++) {
+            waypointCount++;
         }
-         * 
-         */
+
+        naviData.WaypointNumber.value=waypointCount;
+    }
+
+    public static void clearWPList() {
+        for (Waypoint_t wp : waypointList) {
+            wp.clearData();
+        }
+        waypointCount = 0;
+        naviData.WaypointNumber.value=waypointCount;
     }
 
     public static Waypoint_t getEmptyWP(int index) {
-        Waypoint_t wp = new Waypoint_t("WP" + index);
-        wp.Position.Status.value = Waypoint_t.INVALID;
-        wp.Position.Latitude.value = 0;
-        wp.Position.Longitude.value = 0;
-        wp.Position.Altitude.value = 0;
-        wp.Heading.value = 361; 		// invalid value
-        wp.ToleranceRadius.value = 0;	// in meters, if the MK is within that range around the target, then the next target is triggered
-        wp.HoldTime.value = 0;			// in seconds, if the was once in the tolerance area around a WP, this time defines the delay before the next WP is triggered
-        wp.Type.value = Waypoint_t.POINT_TYPE_INVALID;
-        wp.Event_Flag.value = 0;		// future implementation
-        wp.AltitudeRate.value = 0;		// no change of setpoint
-        wp.Speed.value = 30;		// no change of setpoint
-        wp.CameraAngle.value = 0;		// no change of setpoint
-        wp.Index.value = index + 1;
+        Waypoint_t wp = new Waypoint_t("WP" + index, index);
+        wp.clearData();
         return wp;
-    }
-
-    public static void addWP(Waypoint_t wp) {
-
-        int wpIndex = (int) wp.Index.value - 1;
-
-        System.out.println("Add WP " + wp.Index.value);
-        wp.printOut();
-
-        waypointList[wpIndex] = wp;
     }
 
     public static synchronized DataStorage getInstance() {
@@ -225,7 +217,7 @@ public class DataStorage {
         }
     }
 
-    public static void deltePool() {
+    public static void deletePool() {
         try {
             preferences.removeNode();
             preferences = Preferences.userRoot().node(nodeName);
