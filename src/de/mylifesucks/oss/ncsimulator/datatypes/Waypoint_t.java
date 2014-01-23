@@ -7,9 +7,9 @@
  */
 package de.mylifesucks.oss.ncsimulator.datatypes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
 
 /**
  * Waypoint Data Struct
@@ -17,7 +17,7 @@ import java.util.LinkedList;
  *
  * @author Frank Blumenberg
  */
-public class Waypoint_t extends c_int {
+public class Waypoint_t extends c_int implements Observer {
 
     public GPS_Pos_t Position;             // the gps position of the waypoint, see ubx.h for details
     public s16 Heading;                    // orientation, future implementation
@@ -75,6 +75,15 @@ public class Waypoint_t extends c_int {
         allAttribs.add(Speed);
         allAttribs.add(CameraAngle);
         allAttribs.addAll(Arrays.asList(reserve));
+
+        for (c_int c : allAttribs) {
+            c.addObserver(this);
+        }
+    }
+
+    public void update(Observable o, Object arg) {
+        setChanged();
+        notifyObservers();
     }
 
     public void clearData() {
@@ -91,4 +100,106 @@ public class Waypoint_t extends c_int {
         Speed.value = 30;
         CameraAngle.value = 0;
     }
+
+    public synchronized void addToPanel(JComponent panel, GridBagConstraints gbc) {
+        if (nameLabel == null) {
+            initComponent();
+            Position.Longitude.initComponent();
+            Position.Latitude.initComponent();
+            Position.Altitude.initComponent();
+            Heading.initComponent();
+            ToleranceRadius.initComponent();
+            HoldTime.initComponent();
+            Type.initComponent();
+            Event_Flag.initComponent();
+            AltitudeRate.initComponent();
+            Speed.initComponent();
+            CameraAngle.initComponent();
+
+        }
+
+        gbc.gridx = 0;
+        panel.add(Position.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(Position.Longitude.valueField, gbc);
+        gbc.gridx++;
+        panel.add(Position.Latitude.valueField, gbc);
+        gbc.gridx++;
+        panel.add(Position.Altitude.valueField, gbc);
+        gbc.gridx++;
+        panel.add(Heading.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(Heading.valueField, gbc);
+        gbc.gridx++;
+        panel.add(ToleranceRadius.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(ToleranceRadius.valueField, gbc);
+        gbc.gridx++;
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+
+        panel.add(HoldTime.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(HoldTime.valueField, gbc);
+        gbc.gridx++;
+
+        panel.add(Type.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(Type.valueField, gbc);
+        gbc.gridx++;
+
+        panel.add(Event_Flag.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(Event_Flag.valueField, gbc);
+        gbc.gridx++;
+
+        panel.add(AltitudeRate.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(AltitudeRate.valueField, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+
+        panel.add(Speed.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(Speed.valueField, gbc);
+        gbc.gridx++;
+
+        panel.add(CameraAngle.getNameLabel(), gbc);
+        gbc.gridx++;
+        panel.add(CameraAngle.valueField, gbc);
+        gbc.gridx++;
+
+/*
+//                System.out.println(getNameLabel());
+
+            allAttribs.add(Position);
+            allAttribs.add(Heading);
+            allAttribs.add(ToleranceRadius);
+            allAttribs.add(HoldTime);
+            allAttribs.add(Event_Flag);
+            allAttribs.add(Index);
+            allAttribs.add(Type);
+            allAttribs.add(WP_EventChannelValue);
+            allAttribs.add(AltitudeRate);
+            allAttribs.add(Speed);
+            allAttribs.add(CameraAngle);
+            allAttribs.addAll(Arrays.asList(reserve));
+
+
+            gbc.gridx++;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            panel.add(valueField, gbc);
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx++;
+            gbc.weightx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            panel.add(slider, gbc);
+            gbc.weightx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            */
+        gbc.gridy++;
+    }
+
 }

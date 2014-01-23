@@ -10,10 +10,11 @@ package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -25,9 +26,6 @@ import de.mylifesucks.oss.ncsimulator.protocol.SendThread;
 import de.mylifesucks.oss.ncsimulator.protocol.SerialComm;
 import de.mylifesucks.oss.ncsimulator.protocol.TcpComm;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -370,19 +368,26 @@ public class MainPanel extends JPanel {
 
         JPanel wpListPane = new JPanel();
         wpListPane.setLayout(new BoxLayout(wpListPane, BoxLayout.PAGE_AXIS));
-        wpListPane.add(new JLabel("Label1"));
-        wpListPane.add(new JLabel("Label1"));
-        for (int i = 0; i < 10; i++) {
+
+        for (int i = 0; i < DataStorage.waypointList.length; i++) {
 
             Waypoint_t wp = DataStorage.waypointList[i];
+
+            JLabel title = new JLabel("Waypoint " + (i+1));
+            title.setMinimumSize(new Dimension(120, 40));
+            title.setPreferredSize(title.getMinimumSize());
+            title.setSize(title.getPreferredSize());
+
+            Font font = title.getFont();
+            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            title.setFont(boldFont);
+            wpListPane.add(title);
 
             JPanel wpPanel = new JPanel(new GridBagLayout());
             GridBagConstraints wpgbc = new GridBagConstraints();
             wpgbc.gridy++;
             wp.addToPanel(wpPanel, wpgbc);
             wpListPane.add(wpPanel);
-
-            wpListPane.add(new JLabel("Label1"));
         }
         wpListPane.add(new JLabel("Label1"));
         wpListPane.add(new JLabel("Label1"));
