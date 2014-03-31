@@ -17,7 +17,7 @@ import java.util.LinkedList;
  */
 public class paramset_t extends c_int {
 
-    int EEPARAM_REVISION = 98;
+    int EEPARAM_REVISION = 100;
     //GlobalConfig3
     int CFG3_NO_SDCARD_NO_START = 0x01;
     int CFG3_DPH_MAX_RADIUS = 0x02;
@@ -185,7 +185,8 @@ public class paramset_t extends c_int {
     u8 CompassOffset;
     u8 AutoLandingVoltage;    // in 0,1V  0 -> disabled
     u8 ComingHomeVoltage;    // in 0,1V  0 -> disabled
-
+    u8 AutoPhotoAtitudes;
+    u8 SingleWpSpeed;
     //------------------------------------------------
     u8Flags BitConfig;// (war Loop-Cfg) Bitcodiert: 0x01;/ wird getrennt behandelt
     u8Flags ServoCompInvert;// //  0x01 ;// WICHTIG!!! am Ende lassen
@@ -334,6 +335,10 @@ public class paramset_t extends c_int {
         UnterspannungsWarnung.setValue(33, false);
         ComingHomeVoltage.setValue(32, false);
         AutoLandingVoltage.setValue(31, false);
+        
+        AutoPhotoAtitudes.setValue(0, false);
+        SingleWpSpeed.setValue(50, false);
+        
     }
     /*
      void ParamSet_DefaultSet1(void) // sport
@@ -550,6 +555,8 @@ public class paramset_t extends c_int {
         CompassOffset = new u8(index + "CompassOffset");
         AutoLandingVoltage = new u8(index + "AutoLandingVoltage");
         ComingHomeVoltage = new u8(index + "ComingHomeVoltage");
+        AutoPhotoAtitudes = new u8(index + "AutoPhotoAtitudes");
+        SingleWpSpeed = new u8(index + "SingleWpSpeed");
 
         //------------------------------------------------
         BitConfig = new u8Flags(index + " BitConfig", new String[]{"UP", "DOWN", "LEFT", "RIGHT", "MOTOR_BLINK1", "MOTOR_OFF_LED1", "MOTOR_OFF_LED2", "MOTOR_BLINK1"});          // (war Loop-Cfg) Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
@@ -557,7 +564,6 @@ public class paramset_t extends c_int {
 
         ExtraConfig = new u8Flags(index + " ExtraConfig", new String[]{"HEIGHT_LIMIT", "VARIO_BEEP", "SENSITIVE_RC", "3_3V_REFERENCE", "NO_RCOFF_BEEPING", "GPS_AID", "LEARNABLE_CAREFREE", "IGNORE_MAG_ERR_AT_STARTUP"});        // bitcodiert
         GlobalConfig3 = new u8Flags(index + " GlobalConfig3", new String[]{"NO_SDCARD_NO_START", "DPH_MAX_RADIUS", "VARIO_FAILSAFE", "MOTOR_SWITCH_MODE", "NO_GPSFIX_NO_START", "USE_NC_FOR_OUT1", "SPEAK_ALL", "SERVO_NICK_COMP_OFF"});        // bitcodiert
-
 
         Name = new c_string(index + " Name", 12, "Setting " + index);
         crc = new u8(index + " crc");
@@ -691,6 +697,8 @@ public class paramset_t extends c_int {
         allAttribs.add(CompassOffset);
         allAttribs.add(AutoLandingVoltage);
         allAttribs.add(ComingHomeVoltage);
+        allAttribs.add(AutoPhotoAtitudes);
+        allAttribs.add(SingleWpSpeed);
 
         allAttribs.add(BitConfig);
         allAttribs.add(ServoCompInvert);
@@ -703,8 +711,6 @@ public class paramset_t extends c_int {
          }*/
         allAttribs.add(Name);
         allAttribs.add(crc);
-
-
 
     }
 }
