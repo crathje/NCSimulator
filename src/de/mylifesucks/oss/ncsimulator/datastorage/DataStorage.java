@@ -1,9 +1,8 @@
 /**
  *
  * Copyright (C) 2010-2011 by Claas Anders "CaScAdE" Rathje
- * admiralcascade@gmail.com
- * Licensed under: Creative Commons / Non Commercial / Share Alike
- * http://creativecommons.org/licenses/by-nc-sa/2.0/de/
+ * admiralcascade@gmail.com Licensed under: Creative Commons / Non Commercial /
+ * Share Alike http://creativecommons.org/licenses/by-nc-sa/2.0/de/
  *
  */
 package de.mylifesucks.oss.ncsimulator.datastorage;
@@ -16,6 +15,8 @@ import de.mylifesucks.oss.ncsimulator.datatypes.LCDData;
 import de.mylifesucks.oss.ncsimulator.datatypes.MixerTable_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.NaviData_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.PPMArray;
+import de.mylifesucks.oss.ncsimulator.datatypes.WPL_Answer_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.WPL_Store_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.datatypes.paramset_t;
@@ -75,6 +76,8 @@ public class DataStorage {
     public static Waypoint_t waypointList[] = new Waypoint_t[MAX_WAYPOINTS];
     public static int waypointCount;
 
+    public static WPL_Store_t[] wplStores = new WPL_Store_t[4];
+
     public static PPMArray ppmarray = new PPMArray();
     public static MixerTable_t mixerset = new MixerTable_t();
     public static LCDData lcddata = new LCDData();
@@ -107,7 +110,6 @@ public class DataStorage {
         serializePool = new LinkedList<c_int>();
         preferences = Preferences.userRoot().node(nodeName);
 
-
         if (paramset == null || paramset[0] == null) {
             paramset = new paramset_t[5];
             for (int i = 0; i < paramset.length; i++) {
@@ -121,15 +123,46 @@ public class DataStorage {
             }
         }
 
-
-        if (waypointList == null)
+        if (waypointList == null) {
             waypointList = new Waypoint_t[256];
+        }
 
         for (int i = 0; i < waypointList.length; i++) {
             waypointList[i] = getEmptyWP(i + 1);
         }
 
         waypointCount = 0;
+
+        if (wplStores == null) {
+            wplStores = new WPL_Store_t[4];
+        }
+        for (int i = 0; i < wplStores.length; i++) {
+            wplStores[i] = new WPL_Store_t(i);
+        }
+
+    }
+
+    public static WPL_Answer_t setWplStore(WPL_Store_t store) {
+        WPL_Answer_t result = new WPL_Answer_t();
+
+        result.Index.value = store.Index.value;
+        result.Status.value = WPL_Answer_t.WPL_OK;
+
+        if (waypointCount == 0) {
+            result.Status.value = WPL_Answer_t.WPL_NO_WAYPOINTS;
+        } else if (store.Index.value > wplStores.length) {
+            result.Status.value = WPL_Answer_t.WPL_ERROR;
+        } else {
+            WPL_Store_t localStore = wplStores[(int) store.Index.value];
+            if (localStore.res1.value > 0 && store.OverwriteFile.value == 0) {
+                result.Status.value = WPL_Answer_t.WPL_FILEEXIST;
+            } else {
+                localStore.Name.value = store.Name.value;
+                localStore.res1.value = 1;
+            }
+        }
+
+        return result;
     }
 
     public static void updateWPCount() {
@@ -138,7 +171,7 @@ public class DataStorage {
             waypointCount++;
         }
 
-        naviData.WaypointNumber.value=waypointCount;
+        naviData.WaypointNumber.value = waypointCount;
     }
 
     public static void clearWPList() {
@@ -146,7 +179,7 @@ public class DataStorage {
             wp.clearData();
         }
         waypointCount = 0;
-        naviData.WaypointNumber.value=waypointCount;
+        naviData.WaypointNumber.value = waypointCount;
     }
 
     public static Waypoint_t getEmptyWP(int index) {

@@ -1,9 +1,8 @@
 /**
  *
  * Copyright (C) 2010-2011 by Claas Anders "CaScAdE" Rathje
- * admiralcascade@gmail.com
- * Licensed under: Creative Commons / Non Commercial / Share Alike
- * http://creativecommons.org/licenses/by-nc-sa/2.0/de/
+ * admiralcascade@gmail.com Licensed under: Creative Commons / Non Commercial /
+ * Share Alike http://creativecommons.org/licenses/by-nc-sa/2.0/de/
  *
  */
 package de.mylifesucks.oss.ncsimulator.protocol;
@@ -14,6 +13,8 @@ import java.io.*;
 import java.util.*;
 //import javax.comm.*;
 import gnu.io.*;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
@@ -90,16 +91,13 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
             return;
         }
 
-
         if (port != null) {
             defaultPort = port;
         }
 
-
         System.out.println("Set default port to " + defaultPort);
 
         // parse ports and if the default port is found, initialized the reader
-
         if (!portMap.keySet().contains(defaultPort)) {
             System.out.println("port " + defaultPort + " not found.");
             System.exit(0);
@@ -119,7 +117,6 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
                 SerialPort.STOPBITS_1,
                 SerialPort.PARITY_NONE);
 
-
         // first thing in the thread, we initialize the write operation
         initwritetoport();
 
@@ -136,6 +133,7 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
             }
         }
     }
+
     byte[] readBuffer = new byte[220];
 
     /**
@@ -144,6 +142,10 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
      * @see http://www.mikrokopter.de/ucwiki/en/SerialProtocol
      */
     public void serialEvent(SerialPortEvent event) {
+
+        //"0x1B,0x1B,0x55,0xAA,0x00"
+        byte[] pattern = new byte[]{27, 27, 85, (byte) 170, 0};
+
         switch (event.getEventType()) {
             case SerialPortEvent.BI:
             case SerialPortEvent.OE:
@@ -156,42 +158,21 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
             case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
-                //System.out.print(".");
                 try {
                     while (inputStream.available() > 0) {
-                        int numBytes = inputStream.read(readBuffer);
-                        int foo = 0;
-                        //"0x1B,0x1B,0x55,0xAA,0x00"
-                        while (foo < readBuffer.length - 5
-                                && (readBuffer[foo] != 0x1B
-                                || readBuffer[foo + 1] != 0x1B
-                                || readBuffer[foo + 2] != 0x55
-                                //|| readBuffer[foo + 3] != 0xAA
-                                || readBuffer[foo + 4] != 0x00)) {
-                            foo++;
-                        }
-                        if (readBuffer[foo] == 0x1B
-                                && readBuffer[foo + 1] == 0x1B
-                                //&& readBuffer[foo + 2] != 0x55
-                                && readBuffer[foo + 3] != 0xAA //&& readBuffer[foo + 4] != 0x00
-                                ) {
-                            
-                            if (LogPanel.showInput.isSelected()) {
-                                LogPanel.giveMessage("back to NC debug", LogPanel.green);
-                            }
 
-                            DataStorage.setUART(DataStorage.UART_CONNECTION.NC);
-                            UartState = 0;
-                        }
-                        else {
-                            for (int i = 0; i < numBytes; i++) {
-                                USART0_RX_vect((char) readBuffer[i]);
-                            }
-                        }
+                        Arrays.fill(readBuffer, (byte) 0);
+                        int numBytes = inputStream.read(readBuffer);
+                        byte[] data = Arrays.copyOfRange(readBuffer, 0, numBytes);
+        System.out.println(Hex.encodeHexString(readBuffer));
+        System.out.println(Hex.encodeHexString(data));
+
+                        HandleInputData(data);
                     }
                 } catch (IOException ex) {
                 }
                 break;
         }
     }
+
 }

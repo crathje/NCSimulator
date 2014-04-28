@@ -29,6 +29,9 @@ public class str_DebugOut extends c_int {
             Status[i] = new u8(prefix + " Status " + i);
             allAttribs.add(Status[i]);
         }
+        
+        Status[0].value=255;
+        
         for (int i = 0; i < Analog.length; i++) {
             Analog[i] = new s16Debug(prefix + "Analog ", i, ADDRESS);
             allAttribs.add(Analog[i]);

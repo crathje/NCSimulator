@@ -1,9 +1,8 @@
 /**
  *
  * Copyright (C) 2010-2011 by Claas Anders "CaScAdE" Rathje
- * admiralcascade@gmail.com
- * Licensed under: Creative Commons / Non Commercial / Share Alike
- * http://creativecommons.org/licenses/by-nc-sa/2.0/de/
+ * admiralcascade@gmail.com Licensed under: Creative Commons / Non Commercial /
+ * Share Alike http://creativecommons.org/licenses/by-nc-sa/2.0/de/
  *
  */
 package de.mylifesucks.oss.ncsimulator.protocol;
@@ -12,6 +11,8 @@ import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  *
@@ -68,21 +69,30 @@ public class TcpComm extends CommunicationBase implements Runnable {
                 CommunicationBase.outputStream = clientSocket.getOutputStream();
                 InputStream inputStream = clientSocket.getInputStream();
                 while (!clientSocket.isClosed()) {
+                    Arrays.fill(readBuffer, (byte)0);
                     int numBytes = inputStream.read(readBuffer);
 //                    System.out.println("Read bytes from socket:" + numBytes);
 //                    System.out.println("socket:" + clientSocket.isClosed());
 //                    System.out.println("socket:" + clientSocket.isConnected());
 
-                    if(numBytes<0)
+                    if (numBytes < 0) {
                         clientSocket.close();
+                    }
 
                     String out = "";
                     for (int i = 0; i < numBytes; i++) {
                         out += (char) readBuffer[i];
                     }
 
-                    if(!out.startsWith("#a") && !out.startsWith("#co") )
-                      System.out.println("Read bytes from socket:" + out);
+                    if (!out.startsWith("#a") && !out.startsWith("#co")) {
+                        System.out.println("Read bytes from socket:" + out);
+                    }
+
+                    byte[] data = Arrays.copyOfRange(readBuffer, 0, numBytes-1);
+                    out = new String(data);
+                    System.out.println("Read bytes from socket:" + out);
+                    System.out.print("Len: " + numBytes + ": ");
+                    System.out.println(Hex.encodeHexString(data));
 
                     int foo = 0;
                     //"0x1B,0x1B,0x55,0xAA,0x00"
@@ -105,8 +115,7 @@ public class TcpComm extends CommunicationBase implements Runnable {
 
                         DataStorage.setUART(DataStorage.UART_CONNECTION.NC);
                         UartState = 0;
-                    }
-                    else {
+                    } else {
 
                         for (int i = 0; i < numBytes; i++) {
                             USART0_RX_vect((char) readBuffer[i]);

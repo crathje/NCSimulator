@@ -8,12 +8,16 @@
 package de.mylifesucks.oss.ncsimulator.protocol;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
+import de.mylifesucks.oss.ncsimulator.datatypes.WPL_Answer_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.WPL_Store_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.datatypes.s8;
 import de.mylifesucks.oss.ncsimulator.gui.LogPanel;
 import java.io.*;
 import java.util.*;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.ArrayUtils;
 //import javax.comm.*;
 
 
@@ -45,6 +49,7 @@ public class CommunicationBase {
     volatile boolean NeuerDatensatzEmpfangen = false;
     int AnzahlEmpfangsBytes = 0;
 
+    
     protected void USART0_RX_vect(int SioTmp) {
         if (buf_ptr >= MAX_EMPFANGS_BUFF) {
             UartState = 0;
@@ -87,7 +92,7 @@ public class CommunicationBase {
                     }
                 });
             } else {
-//                System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen + " CrcOkay: " + CrcOkay);
+                System.out.println("NeuerDatensatzEmpfangen: " + NeuerDatensatzEmpfangen + " CrcOkay: " + CrcOkay);
             }
         } else {
             switch (UartState) {
@@ -222,6 +227,13 @@ public class CommunicationBase {
                         switch (RxdBuffer[1] - 'a') {
                             case CommunicationBase.NC_ADDRESS:
                                 switch (RxdBuffer[2]) {
+                                    case 'i':
+                                         WPL_Store_t store = new WPL_Store_t(0);
+                                        store.loadFromInt(RxdBuffer, pRxData);
+                                        System.out.println("recieved WP " + store.Index.value);
+                                        WPL_Answer_t answer= DataStorage.setWplStore(store);
+                                        DataStorage.encoder.send_command(NC_ADDRESS, 'I', answer.getAsInt());
+                                        break;
                                     case 'c': // request for 3d info
                                         //System.out.println("3D from NC");
                                         if ((DataStorage.data3d_t.requestTime = RxdBuffer[pRxData] * 10) > 0) {
@@ -374,6 +386,10 @@ public class CommunicationBase {
                                     case 'K':// Kompasswert
                                         break;
                                     case 't':// Motortest
+                                    if (LogPanel.showInput.isSelected()) {
+                                            out = ArrayUtils.toString(Arrays.copyOfRange(RxdBuffer, pRxData,pRxData+15));
+                                            LogPanel.giveMessage(out, LogPanel.green);
+                                        }
                                         break;
                                     case 'n':// "Get Mixer
                                         DataStorage.encoder.send_command(FC_ADDRESS, 'N', DataStorage.mixerset.getAsInt());
@@ -525,5 +541,27 @@ public class CommunicationBase {
         NeuerDatensatzEmpfangen = false;
         pRxData = 0;
         RxDataLen = 0;
+    }
+
+    public void HandleInputData(byte[] data) {
+//        String out = new String(data);
+//        System.out.println("Read bytes from socket:" + out);
+        System.out.print("Len: " + data.length + ": ");
+        System.out.println("     " + Hex.encodeHexString(data));
+        for (int i = 0; i < data.length; i++) {
+//            System.out.println(data[i]);
+            if (i < data.length - 5 && (data[i] == 27 || data[i + 1] == 27 || data[i + 2] == 85 || data[i + 3] == 170 || data[i + 4] == 0)) {
+                i += 4;
+//                System.out.println("back to NC debug");
+                if (LogPanel.showInput.isSelected()) {
+                    LogPanel.giveMessage("back to NC debug", LogPanel.green);
+                }
+                DataStorage.setUART(DataStorage.UART_CONNECTION.NC);
+                UartState = 0;
+            } else {
+                System.out.println("Check:" + (char) data[i]);
+                USART0_RX_vect((char) data[i]);
+            }
+        }
     }
 }

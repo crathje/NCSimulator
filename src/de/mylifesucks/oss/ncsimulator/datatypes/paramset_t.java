@@ -17,10 +17,10 @@ import java.util.LinkedList;
  */
 public class paramset_t extends c_int {
 
-    int EEPARAM_REVISION = 100;
+    int EEPARAM_REVISION = 102;
     //GlobalConfig3
     int CFG3_NO_SDCARD_NO_START = 0x01;
-    int CFG3_DPH_MAX_RADIUS = 0x02;
+    //int CFG3_DPH_MAX_RADIUS = 0x02;
     int CFG3_VARIO_FAILSAFE = 0x04;
     int CFG3_MOTOR_SWITCH_MODE = 0x08;
     int CFG3_NO_GPSFIX_NO_START = 0x10;
@@ -149,7 +149,7 @@ public class paramset_t extends c_int {
     u8 WARN_J16_Bitmask;// for the J16 Output
     u8 WARN_J17_Bitmask;// for the J17 Output
     //---NaviCtrl---------------------------------------------
-    u8 NaviOut1Parameter;// Parameters for the Naviboard
+    u8 AutoPhotoDistance;// Parameters for the Naviboard
     u8 NaviGpsModeChannel;// Parameters for the Naviboard
     u8 NaviGpsGain;
     u8 NaviGpsP;
@@ -163,9 +163,11 @@ public class paramset_t extends c_int {
     u8 NaviStickThreshold;
     u8 NaviWindCorrection;
     u8 NaviAccCompensation;
-    u8 NaviOperatingRadius;
+    u8 NaviMaxFlyingRange;
     u8 NaviAngleLimitation;
     u8 NaviPH_LoginTime;
+    u8 NaviDescendRange;
+    
     //---Ext.Ctrl---------------------------------------------
     u8 ExternalControl;// for serial Control
     //---CareFree---------------------------------------------
@@ -179,6 +181,11 @@ public class paramset_t extends c_int {
     u8 FailsafeChannel;
     u8 ServoFilterNick;
     u8 ServoFilterRoll;
+    
+    u8 Servo3OnValue;
+    u8 Servo3OffValue;
+    u8 Servo4OnValue;
+    u8 Servo4OffValue;
     u8 StartLandChannel;
     u8 LandingSpeed;
 
@@ -300,7 +307,7 @@ public class paramset_t extends c_int {
         LoopHysterese.setValue(50, false);
         BitConfig.setValue(0, false);              // Bitcodiert: 0x01=oben, 0x02=unten, 0x04=links, 0x08=rechts / wird getrennt behandelt
 
-        NaviOut1Parameter.setValue(0, false); // Photo release in meter
+        AutoPhotoDistance.setValue(0, false); // Photo release in meter
         NaviGpsModeChannel.setValue(254, false); // 254 -> Poti 2
         NaviGpsGain.setValue(100, false);
         NaviGpsP.setValue(90, false);
@@ -314,9 +321,10 @@ public class paramset_t extends c_int {
         NaviStickThreshold.setValue(8, false);
         NaviWindCorrection.setValue(90, false);
         NaviAccCompensation.setValue(42, false);
-        NaviOperatingRadius.setValue(245, false);
+        NaviMaxFlyingRange.setValue(245, false);
         NaviAngleLimitation.setValue(140, false);
         NaviPH_LoginTime.setValue(5, false);
+        NaviDescendRange.setValue(10, false);
         OrientationAngle.setValue(0, false);
         CareFreeChannel.setValue(0, false);
         UnterspannungsWarnung.setValue(33, false); // Wert : 0-247 ( Automatische Zellenerkennung bei < 50)
@@ -519,7 +527,7 @@ public class paramset_t extends c_int {
         WARN_J16_Bitmask = new u8(index + " WARN_J16_Bitmask");       // for the J16 Output
         WARN_J17_Bitmask = new u8(index + " WARN_J17_Bitmask");       // for the J17 Output
         //---NaviCtrl---------------------------------------------
-        NaviOut1Parameter = new u8(index + " NaviOut1Parameter");     // Parameters for the Naviboard
+        AutoPhotoDistance = new u8(index + " AutoPhotoDistance");     // Parameters for the Naviboard
         NaviGpsModeChannel = new u8(index + " NaviGpsModeChannel");     // Parameters for the Naviboard
         NaviGpsGain = new u8(index + " NaviGpsGain");
         NaviGpsP = new u8(index + " NaviGpsP");
@@ -533,7 +541,8 @@ public class paramset_t extends c_int {
         NaviStickThreshold = new u8(index + " NaviStickThreshold");
         NaviWindCorrection = new u8(index + " NaviWindCorrection");
         NaviAccCompensation = new u8(index + " NaviSpeedCompensation");
-        NaviOperatingRadius = new u8(index + " NaviOperatingRadius");
+        NaviMaxFlyingRange = new u8(index + " NaviMaxFlyingRange");
+        NaviDescendRange = new u8(index + " NaviDescendRange");
         NaviAngleLimitation = new u8(index + " NaviAngleLimitation");
         NaviPH_LoginTime = new u8(index + " NaviPH_LoginTime");
         //---Ext.Ctrl---------------------------------------------
@@ -549,6 +558,13 @@ public class paramset_t extends c_int {
         FailsafeChannel = new u8(index + "FailsafeChannel");
         ServoFilterNick = new u8(index + "ServoFilterNick");
         ServoFilterRoll = new u8(index + "ServoFilterRoll");
+        
+        Servo3OnValue = new u8(index + "Servo3OnValue");
+        Servo3OffValue = new u8(index + "Servo3OffValue");
+        Servo4OnValue = new u8(index + "Servo4OnValue");
+        Servo4OffValue = new u8(index + "Servo4OffValue");
+
+        
         StartLandChannel = new u8(index + "StartLandChannel");
         LandingSpeed = new u8(index + "LandingSpeed");
 
@@ -661,7 +677,7 @@ public class paramset_t extends c_int {
         allAttribs.add(J17Timing);
         allAttribs.add(WARN_J16_Bitmask);
         allAttribs.add(WARN_J17_Bitmask);
-        allAttribs.add(NaviOut1Parameter);
+        allAttribs.add(AutoPhotoDistance);
         allAttribs.add(NaviGpsModeChannel);
         allAttribs.add(NaviGpsGain);
         allAttribs.add(NaviGpsP);
@@ -675,9 +691,10 @@ public class paramset_t extends c_int {
         allAttribs.add(NaviStickThreshold);
         allAttribs.add(NaviWindCorrection);
         allAttribs.add(NaviAccCompensation);
-        allAttribs.add(NaviOperatingRadius);
+        allAttribs.add(NaviMaxFlyingRange);
         allAttribs.add(NaviAngleLimitation);
         allAttribs.add(NaviPH_LoginTime);
+        allAttribs.add(NaviDescendRange);
 
         allAttribs.add(ExternalControl);
 
@@ -691,6 +708,12 @@ public class paramset_t extends c_int {
         allAttribs.add(FailsafeChannel);
         allAttribs.add(ServoFilterNick);
         allAttribs.add(ServoFilterRoll);
+        allAttribs.add(Servo3OnValue);
+        allAttribs.add(Servo3OffValue);
+        allAttribs.add(Servo3OnValue);
+        allAttribs.add(Servo4OffValue);
+        
+        
         allAttribs.add(StartLandChannel);
         allAttribs.add(LandingSpeed);
 

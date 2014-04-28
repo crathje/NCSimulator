@@ -10,6 +10,7 @@ package de.mylifesucks.oss.ncsimulator.gui;
 
 import de.mylifesucks.oss.ncsimulator.datastorage.DataStorage;
 import de.mylifesucks.oss.ncsimulator.datatypes.BLData_t;
+import de.mylifesucks.oss.ncsimulator.datatypes.WPL_Store_t;
 import de.mylifesucks.oss.ncsimulator.datatypes.c_int;
 import de.mylifesucks.oss.ncsimulator.gui.datawindow.DataWindowPanel;
 import de.mylifesucks.oss.ncsimulator.datatypes.Waypoint_t;
@@ -395,6 +396,37 @@ public class MainPanel extends JPanel {
         JScrollPane waypointScrollpane = new JScrollPane(wpListPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tabbed.addTab("Waypoints", waypointScrollpane);
 
+
+        JPanel wpStoragePane = new JPanel();
+        wpStoragePane.setLayout(new BoxLayout(wpStoragePane, BoxLayout.PAGE_AXIS));
+
+        for (int i = 0; i < DataStorage.wplStores.length; i++) {
+
+            WPL_Store_t wp = DataStorage.wplStores[i];
+
+            JLabel title = new JLabel("WP-Storage " + (i+1));
+            title.setMinimumSize(new Dimension(120, 40));
+            title.setPreferredSize(title.getMinimumSize());
+            title.setSize(title.getPreferredSize());
+
+            Font font = title.getFont();
+            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            title.setFont(boldFont);
+            wpStoragePane.add(title);
+
+            JPanel wpPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints wpgbc = new GridBagConstraints();
+            wpgbc.gridy++;
+            wp.addToPanel(wpPanel, wpgbc);
+            wpStoragePane.add(wpPanel);
+        }
+        wpStoragePane.add(new JLabel("Label1"));
+        wpStoragePane.add(new JLabel("Label1"));
+
+        JScrollPane wpStorageScrollpane = new JScrollPane(wpStoragePane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tabbed.addTab("WP-Storage", wpStorageScrollpane);
+
+        
 //        JTabbedPane waipointsPanel = new JTabbedPane();
 //        waipointsPanel.setLayout(new BoxLayout(waipointsPanel, BoxLayout.PAGE_AXIS));
 //
@@ -502,13 +534,13 @@ public class MainPanel extends JPanel {
 
 
         DataStorage.FCversion.SWMajor.value = 2;
-        DataStorage.FCversion.SWMinor.value = 0;
+        DataStorage.FCversion.SWMinor.value = 6;
         DataStorage.FCversion.SWPatch.value = 0; // a
         DataStorage.FCversion.ProtoMajor.value = 11;
         DataStorage.FCversion.ProtoMinor.value = 0;
 
         DataStorage.NCversion.SWMajor.value = 2;
-        DataStorage.NCversion.SWMinor.value = 0;
+        DataStorage.NCversion.SWMinor.value = 6;
         DataStorage.NCversion.SWPatch.value = 1; // a
         DataStorage.NCversion.ProtoMajor.value = 11;
         DataStorage.NCversion.ProtoMinor.value = 0;
