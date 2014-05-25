@@ -149,6 +149,7 @@ public class InfoPanel extends JPanel {
                 + "Credits to:\n"
                 + "\tMarcus -LiGi- Bueschleb for the Encode/Decode java parts I borrowed from DUBWise\n"
                 + "\tHolger Buss & Ingo Busker for the MikroKopter-project\n"
+                + "\tFrank Blumenberg for adapting the simulator to current FC/NC releases\n"
                 + "");
 //        jta.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         jta.setBackground(this.getBackground());
