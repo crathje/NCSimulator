@@ -35,7 +35,7 @@ public class NaviData_t extends c_int implements Observer{
     public s16 Altimeter = new s16("Altimeter",-3000,3000); // hight according to air pressure
     public s16 Variometer = new s16("Variometer",-20,20); // climb(+) and sink(-) rate
     public u16 FlyingTime = new u16("FlyingTime"); // in seconds
-    public u8 UBat = new u8("UBat",250); // Battery Voltage in 0.1 Volts
+    public u8 UBat = new u8("UBat",255); // Battery Voltage in 0.1 Volts
     public u16 GroundSpeed = new u16("GroundSpeed"); // speed over ground in cm/s (2D)
     public s16 Heading = new s16("Heading",-180,180); // current flight direction in � as angle to north
     public s16 CompassHeading = new s16("CompassHeading",0,359); // current compass value in �
