@@ -164,8 +164,8 @@ public class SerialComm extends CommunicationBase implements Runnable, SerialPor
                         Arrays.fill(readBuffer, (byte) 0);
                         int numBytes = inputStream.read(readBuffer);
                         byte[] data = Arrays.copyOfRange(readBuffer, 0, numBytes);
-        System.out.println(Hex.encodeHexString(readBuffer));
-        System.out.println(Hex.encodeHexString(data));
+//        System.out.println(Hex.encodeHexString(readBuffer));
+//        System.out.println(Hex.encodeHexString(data));
 
                         HandleInputData(data);
                     }

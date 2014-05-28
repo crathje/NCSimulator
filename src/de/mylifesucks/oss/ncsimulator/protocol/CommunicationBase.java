@@ -546,11 +546,11 @@ public class CommunicationBase {
     public void HandleInputData(byte[] data) {
 //        String out = new String(data);
 //        System.out.println("Read bytes from socket:" + out);
-        System.out.print("Len: " + data.length + ": ");
-        System.out.println("     " + Hex.encodeHexString(data));
+//        System.out.print("Len: " + data.length + ": ");
+//        System.out.println("     " + Hex.encodeHexString(data));
         for (int i = 0; i < data.length; i++) {
 //            System.out.println(data[i]);
-            if (i < data.length - 5 && (data[i] == 27 || data[i + 1] == 27 || data[i + 2] == 85 || data[i + 3] == 170 || data[i + 4] == 0)) {
+            if (i < data.length - 5 && (data[i] == 0x1B && data[i + 1] == 0x1B && data[i + 2] == 0x55 /*&& data[i + 3] == 170 */ &&  data[i + 4] == 0x00)) {
                 i += 4;
 //                System.out.println("back to NC debug");
                 if (LogPanel.showInput.isSelected()) {
@@ -559,7 +559,7 @@ public class CommunicationBase {
                 DataStorage.setUART(DataStorage.UART_CONNECTION.NC);
                 UartState = 0;
             } else {
-                System.out.println("Check:" + (char) data[i]);
+//                System.out.println("Check:" + (char) data[i]);
                 USART0_RX_vect((char) data[i]);
             }
         }

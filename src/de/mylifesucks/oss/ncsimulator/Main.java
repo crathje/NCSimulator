@@ -43,7 +43,7 @@ public class Main extends JFrame {
     public static final String mainFramePX = "MainFrame Position X";
     public static final String mainFramePY = "MainFrame Position Y";
     public static final String title = "NC Simulator by CaScAdE";
-    public static final String version = "2013XXXX-XXXX";
+    public static final String version = "2014XXXX-XXXX";
 
     Main() {
         super(title + " Version: " + version);
